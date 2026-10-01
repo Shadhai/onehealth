@@ -7,3 +7,5 @@ fhir.resources==7.1.0
 scikit-learn==1.5.2
 supabase==2.9.1
 python-dotenv==1.0.1
+pytest==9.1.1
+pytest-asyncio==1.4.0
