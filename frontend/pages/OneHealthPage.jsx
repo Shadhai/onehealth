@@ -15,7 +15,7 @@ export default function OneHealthPage({ sites = [], onToast }) {
 
   useEffect(() => {
     if (!active?.latest_observation_id) return;
-    fetch(`/insights/${encodeURIComponent(active.latest_observation_id)}`)
+    fetch(`${import.meta.env.VITE_API_URL || ""}/insights/${encodeURIComponent(active.latest_observation_id)}`)
       .then((r) => (r.ok ? r.json() : null))
       .then(setCard)
       .catch(() => setCard(null));

@@ -38,7 +38,7 @@ export default function AuditTrail({ sites = [] }) {
     setLoading(true);
     setAudit(null);
     const id = activeSite.latest_observation_id;
-    fetch(`/insights/${encodeURIComponent(id)}/audit`)
+    fetch(`${import.meta.env.VITE_API_URL || ""}/insights/${encodeURIComponent(id)}/audit`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => setAudit(data))
       .catch(() => setAudit(null))

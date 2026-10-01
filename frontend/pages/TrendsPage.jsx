@@ -16,7 +16,7 @@ export default function TrendsPage({ sites = [], insights = [] }) {
 
   useEffect(() => {
     if (!activeSite?.site) return;
-    fetch(`/insights/trends/${encodeURIComponent(activeSite.site)}`)
+    fetch(`${import.meta.env.VITE_API_URL || ""}/insights/trends/${encodeURIComponent(activeSite.site)}`)
       .then((r) => (r.ok ? r.json() : []))
       .then((d) => setSeries(Array.isArray(d) ? d : []))
       .catch(() => setSeries([]));

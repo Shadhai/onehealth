@@ -171,8 +171,8 @@ export default function CardsPage({ sites = [], onToast }) {
     setLoading(true);
     const id = activeSite.latest_observation_id;
     Promise.all([
-      fetch(`/insights/${encodeURIComponent(id)}`).then((r) => (r.ok ? r.json() : null)),
-      fetch(`/insights/${encodeURIComponent(id)}/flags`).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+      fetch(`${import.meta.env.VITE_API_URL || ""}/insights/${encodeURIComponent(id)}`).then((r) => (r.ok ? r.json() : null)),
+      fetch(`${import.meta.env.VITE_API_URL || ""}/insights/${encodeURIComponent(id)}/flags`).then((r) => (r.ok ? r.json() : null)).catch(() => null),
     ])
       .then(([c, f]) => { setCard(c); setFlags(f); })
       .catch(() => { setCard(null); setFlags(null); })
