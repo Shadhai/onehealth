@@ -52,6 +52,20 @@ def create_app(store: Store = None) -> FastAPI:
             name="static",
         )
 
+    # On startup, ensure the database is ready
+    @app.on_event("startup")
+    async def startup_event():
+        db_path = "onehealth.db"
+        if not os.path.exists(db_path):
+            print("Database not found, running initial pipeline to populate data...")
+            try:
+                # This script should load your mock data and run the pipeline
+                import subprocess
+                subprocess.run(["python", "scripts/demo_persist.py"], check=True)
+                print("Database populated successfully.")
+            except Exception as e:
+                print(f"Error running initial data pipeline: {e}")
+
     return app
 
 
