@@ -198,7 +198,7 @@ export default function AuditTrail({ sites = [] }) {
           <div className="flex items-center gap-3">
             <span className="material-symbols-outlined text-emerald-400 text-lg">verified_user</span>
             <div>
-              <p className="text-[var(--ink)] font-semibold">{audit.stage_count} of 9 stages persisted for this observation</p>
+              <p className="text-[var(--ink)] font-semibold">{audit.stage_count} pipeline stages visualized · Store and Distribute operate in the background</p>
               <p className="text-[var(--ink-dim)] text-[11px]">Every intermediate state is queryable. No stage output is discarded.</p>
             </div>
           </div>

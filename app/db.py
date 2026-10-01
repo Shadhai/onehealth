@@ -185,17 +185,23 @@ class Store:
 
     def get_insights_by_site(self, site: str, limit: int = 50) -> list[dict]:
         rows = self.conn.execute(
-            "SELECT payload FROM one_health_insights "
-            "WHERE research_site = ? "
-            "ORDER BY risk_index DESC LIMIT ?",
+            "SELECT i.payload "
+            "FROM one_health_insights i "
+            "JOIN normalized_observations n ON n.observation_id = i.observation_id "
+            "WHERE i.research_site = ? "
+            "ORDER BY n.submission_id DESC, i.observation_id ASC "
+            "LIMIT ?",
             (site, limit),
         ).fetchall()
         return [json.loads(r["payload"]) for r in rows]
 
     def get_recent_insights(self, limit: int = 50) -> list[dict]:
         rows = self.conn.execute(
-            "SELECT payload FROM one_health_insights "
-            "ORDER BY generated_at DESC LIMIT ?",
+            "SELECT i.payload "
+            "FROM one_health_insights i "
+            "JOIN normalized_observations n ON n.observation_id = i.observation_id "
+            "ORDER BY n.submission_id DESC, i.observation_id ASC "
+            "LIMIT ?",
             (limit,),
         ).fetchall()
         return [json.loads(r["payload"]) for r in rows]
@@ -221,12 +227,15 @@ class Store:
         order (oldest first) so the caller can plot left-to-right.
         """
         rows = self.conn.execute(
-            "SELECT payload FROM one_health_insights "
-            "WHERE research_site = ? "
-            "ORDER BY generated_at DESC LIMIT ?",
+            "SELECT i.payload "
+            "FROM one_health_insights i "
+            "JOIN normalized_observations n ON n.observation_id = i.observation_id "
+            "WHERE i.research_site = ? "
+            "ORDER BY n.submission_id ASC, i.observation_id ASC "
+            "LIMIT ?",
             (site, limit),
         ).fetchall()
-        return [json.loads(row["payload"]) for row in reversed(rows)]
+        return [json.loads(row["payload"]) for row in rows]
 
     def get_all_sites_summary(self) -> list[dict]:
         """Return aggregate risk, validation, and coordinate data per site."""
@@ -245,8 +254,12 @@ class Store:
                 (site,),
             ).fetchone()
             latest_row = self.conn.execute(
-                "SELECT payload FROM one_health_insights "
-                "WHERE research_site = ? ORDER BY generated_at DESC LIMIT 1",
+                "SELECT i.payload "
+                "FROM one_health_insights i "
+                "JOIN normalized_observations n ON n.observation_id = i.observation_id "
+                "WHERE i.research_site = ? "
+                "ORDER BY n.submission_id DESC, i.observation_id ASC "
+                "LIMIT 1",
                 (site,),
             ).fetchone()
             latest = json.loads(latest_row["payload"]) if latest_row else None
@@ -259,7 +272,7 @@ class Store:
             coordinate_row = self.conn.execute(
                 "SELECT payload FROM normalized_observations "
                 "WHERE json_extract(payload, '$.research_site') = ? "
-                "ORDER BY normalized_at DESC LIMIT 1",
+                "ORDER BY submission_id DESC, observation_id ASC LIMIT 1",
                 (site,),
             ).fetchone()
             latitude = longitude = None

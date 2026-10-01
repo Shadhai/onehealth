@@ -57,7 +57,10 @@ def test_save_and_get_insight_round_trip(store):
 
 def test_get_insights_by_site_filters_correctly(store):
     raw = load_raw()
-    validated = validate_batch(deduplicate(normalize_batch(raw)))
+    normalized = deduplicate(normalize_batch(raw))
+    validated = validate_batch(normalized)
+    for n in normalized:
+        store.save_normalized(n)
     for v in validated:
         store.save_insight(correlate(make_enriched(v)))
 
@@ -70,15 +73,21 @@ def test_get_insights_by_site_filters_correctly(store):
         assert item["research_site"] == "Riverdale Creek - Segment 4"
 
 
-def test_get_insights_by_site_orders_by_risk_desc(store):
+def test_get_insights_by_site_orders_by_submission_desc(store):
     raw = load_raw()
-    validated = validate_batch(deduplicate(normalize_batch(raw)))
+    normalized = deduplicate(normalize_batch(raw))
+    validated = validate_batch(normalized)
+    for n in normalized:
+        store.save_normalized(n)
     for v in validated:
         store.save_insight(correlate(make_enriched(v)))
 
     results = store.get_insights_by_site("Riverdale Creek - Segment 4")
-    risks = [r["risk_index"] for r in results]
-    assert risks == sorted(risks, reverse=True)
+    submission_by_observation = {
+        n.observation_id: n.submission_id for n in normalized
+    }
+    submissions = [submission_by_observation[r["observation_id"]] for r in results]
+    assert submissions == sorted(submissions, reverse=True)
 
 
 def test_fhir_bundle_round_trip(store):
