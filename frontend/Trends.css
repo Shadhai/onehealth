@@ -1,0 +1,485 @@
+/* ============================================================ */
+/* Trends page                                                  */
+/* ============================================================ */
+
+.tr-page {
+  padding: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+  color: var(--ink);
+}
+
+/* ---------- Header ---------- */
+.tr-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.tr-heading {
+  font: 600 24px/1.2 Georgia, serif;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+.tr-site-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 13px system-ui, sans-serif;
+  color: var(--mut);
+}
+.tr-site-picker select {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: var(--ink);
+  font: 13px system-ui, sans-serif;
+  min-width: 220px;
+}
+
+/* ---------- Grid ---------- */
+.tr-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.tr-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (max-width: 1024px) {
+  .tr-grid   { grid-template-columns: repeat(2, 1fr); }
+  .tr-grid-2 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .tr-grid,
+  .tr-grid-2 { grid-template-columns: 1fr; }
+}
+
+/* ---------- Card ---------- */
+.tr-card {
+  padding: 18px 20px 20px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.tr-title {
+  font: 600 17px/1.25 Georgia, serif;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+.tr-sub {
+  font: 12.5px/1.45 system-ui, sans-serif;
+  color: var(--mut);
+  margin: 0 0 14px;
+}
+
+/* ---------- SVG chart ---------- */
+.tr-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 12px;
+}
+.tr-axis-label {
+  fill: var(--mut);
+  font: 10px system-ui, sans-serif;
+}
+
+/* ---------- Legend ---------- */
+.tr-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font: 12px system-ui, sans-serif;
+  color: var(--mut);
+}
+.tr-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tr-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.tr-legend-value {
+  font-weight: 600;
+  color: var(--ink);
+  margin-left: 4px;
+}
+
+/* ---------- Horizontal bars (observations per site) ---------- */
+.tr-bar-list {
+  display: grid;
+  gap: 8px;
+}
+.tr-bar-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 34px;
+  gap: 10px;
+  align-items: center;
+  font: 12px system-ui, sans-serif;
+}
+.tr-bar-label {
+  color: var(--mut);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tr-bar-track {
+  height: 10px;
+  background: var(--bg);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.tr-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+.tr-bar-value {
+  text-align: right;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Footer ---------- */
+.tr-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* ---------- Error ---------- */
+.tr-error {
+  padding: 10px 14px;
+  background: var(--red-bg);
+  color: var(--red);
+  border-radius: 8px;
+  font: 13px system-ui, sans-serif;
+  margin-bottom: 16px;
+}
+
+/* ---------- Dark theme tweak — same look as reference ---------- */
+:root[data-theme="dark"] .tr-card {
+  background: #172b29;
+  border-color: #2b4642;
+}
+:root[data-theme="dark"] .tr-title {
+  color: #f0f6f3;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 640px) {
+  .tr-page { padding: 14px; }
+  .tr-heading { font-size: 20px; }
+  .tr-header { flex-direction: column; align-items: stretch; }
+  .tr-site-picker { width: 100%; }
+  .tr-site-picker select { flex: 1; min-width: 0; }
+  .tr-card { padding: 14px 16px 16px; }
+  .tr-title { font-size: 15px; }
+  .tr-bar-row { grid-template-columns: 80px 1fr 28px; }
+}
+/* ============================================================ */
+/* Trends page                                                  */
+/* ============================================================ */
+
+.ohl-app[data-view="trends"] .ohl-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  max-width: none;
+}
+
+.ohl-app[data-view="trends"] .ohl-content {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  box-sizing: border-box;
+}
+
+/* ============================================================ */
+/* Trends page                                                  */
+/* ============================================================ */
+
+.tr-page {
+  width: 100%;
+  max-width: 1280px;
+  box-sizing: border-box;
+  padding: 24px;
+  margin: 0 auto;
+  color: var(--ink);
+  min-width: 0;
+}
+
+/* ---------- Header ---------- */
+
+.tr-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.tr-heading {
+  font: 600 24px/1.2 Georgia, serif;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.tr-site-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 13px system-ui, sans-serif;
+  color: var(--mut);
+}
+
+.tr-site-picker select {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: var(--ink);
+  font: 13px system-ui, sans-serif;
+  min-width: 220px;
+}
+
+/* ---------- Grid ---------- */
+
+.tr-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.tr-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* ---------- Card ---------- */
+
+.tr-card {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 18px 20px 20px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tr-title {
+  font: 600 17px/1.25 Georgia, serif;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.tr-sub {
+  font: 12.5px/1.45 system-ui, sans-serif;
+  color: var(--mut);
+  margin: 0 0 14px;
+}
+
+/* ---------- SVG chart ---------- */
+
+.tr-chart {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 12px;
+  overflow: visible;
+}
+
+.tr-axis-label {
+  fill: var(--mut);
+  font: 10px system-ui, sans-serif;
+}
+
+/* ---------- Legend ---------- */
+
+.tr-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font: 12px system-ui, sans-serif;
+  color: var(--mut);
+}
+
+.tr-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tr-legend-dot {
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.tr-legend-value {
+  font-weight: 600;
+  color: var(--ink);
+  margin-left: 4px;
+}
+
+/* ---------- Horizontal bars ---------- */
+
+.tr-bar-list {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+
+.tr-bar-row {
+  display: grid;
+  grid-template-columns: minmax(80px, 120px) minmax(0, 1fr) 34px;
+  gap: 10px;
+  align-items: center;
+  font: 12px system-ui, sans-serif;
+}
+
+.tr-bar-label {
+  color: var(--mut);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tr-bar-track {
+  height: 10px;
+  background: var(--bg);
+  border-radius: 5px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.tr-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.tr-bar-value {
+  text-align: right;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Footer ---------- */
+
+.tr-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* ---------- Error ---------- */
+
+.tr-error {
+  padding: 10px 14px;
+  background: var(--red-bg);
+  color: var(--red);
+  border-radius: 8px;
+  font: 13px system-ui, sans-serif;
+  margin-bottom: 16px;
+}
+
+/* ---------- Dark theme ---------- */
+
+:root[data-theme="dark"] .tr-card {
+  background: #172b29;
+  border-color: #2b4642;
+}
+
+:root[data-theme="dark"] .tr-title {
+  color: #f0f6f3;
+}
+
+/* ============================================================ */
+/* Responsive                                                   */
+/* ============================================================ */
+
+@media (max-width: 1024px) {
+  .tr-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tr-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .tr-grid,
+  .tr-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .tr-page {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .tr-heading {
+    font-size: 20px;
+  }
+
+  .tr-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tr-site-picker {
+    width: 100%;
+  }
+
+  .tr-site-picker select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .tr-card {
+    padding: 14px 16px 16px;
+  }
+
+  .tr-title {
+    font-size: 15px;
+  }
+
+  .tr-bar-row {
+    grid-template-columns: 80px minmax(0, 1fr) 28px;
+  }
+}

@@ -1,0 +1,364 @@
+/* ============================================================ */
+/* One Health page — three pillar layout                        */
+/* ============================================================ */
+/* Patch for styles.css — fixes the One Health page rendering in a
+   squeezed ~270px column.
+
+   Find this existing rule:
+
+     .ohl-app[data-view="overview"] .ohl-layout,
+     .ohl-app[data-view="dashboard"] .ohl-layout,
+     .ohl-app[data-view="map"] .ohl-layout { grid-template-columns: 1fr; }
+
+   and add data-view="onehealth" to the selector list, i.e. replace it with: */
+/* ============================================================ */
+/* Carousel Fix: Remove overflow-x: auto to prevent squishing  */
+/* ============================================================ */
+
+.realms-section {
+  width: 100%;
+  padding: 80px 6vw;
+  overflow: hidden;
+}
+
+.realm-carousel {
+  display: flex;
+  gap: 24px;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 40px 10px 60px;
+  scrollbar-width: none;
+}
+
+.realm-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.realm-card {
+  flex: 0 0 320px;
+  min-width: 320px;
+  padding: 24px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+.ohl-app[data-view="overview"] .ohl-layout,
+.ohl-app[data-view="onehealth"] .ohl-layout,
+.ohl-app[data-view="dashboard"] .ohl-layout,
+.ohl-app[data-view="map"] .ohl-layout { grid-template-columns: 1fr; }
+.oh-page {
+  padding: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+  color: var(--ink);
+}
+
+/* ---------- Header ---------- */
+.oh-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.oh-heading {
+  font: 600 24px/1.2 Georgia, serif;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+.oh-site-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 13px system-ui, sans-serif;
+  color: var(--mut);
+}
+.oh-site-picker select {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: var(--ink);
+  font: 13px system-ui, sans-serif;
+  min-width: 220px;
+}
+
+/* ---------- Site meta ---------- */
+.oh-meta {
+  padding: 18px 22px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
+}
+.oh-meta-site {
+  font: 600 20px/1.2 Georgia, serif;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+.oh-meta-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+/* ---------- Pillar row ---------- */
+.oh-pillars {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 20px;
+}
+.oh-pillar-arrow {
+  align-self: center;
+  color: var(--mut);
+  font-size: 22px;
+  font-weight: 700;
+  user-select: none;
+}
+
+/* ---------- Pillar card ---------- */
+.oh-pillar {
+  padding: 20px 22px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.oh-pillar-title {
+  font: 600 16px/1.3 Georgia, serif;
+  margin: 0 0 12px;
+  color: var(--ink);
+}
+.oh-pillar-score {
+  margin-bottom: 12px;
+}
+.oh-pillar-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font: 600 12px system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+.oh-pillar-badge.green  { background: var(--green-bg);  color: var(--green); }
+.oh-pillar-badge.yellow { background: var(--yellow-bg); color: var(--yellow); }
+.oh-pillar-badge.red    { background: var(--red-bg);    color: var(--red); }
+
+.oh-pillar-summary {
+  font: 13px/1.55 system-ui, sans-serif;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
+
+.oh-pillar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  font: 12.5px/1.55 system-ui, sans-serif;
+  color: var(--ink);
+}
+.oh-pillar-list li {
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--line);
+}
+.oh-pillar-list li:last-child { border-bottom: 0; }
+
+.oh-pillar-actions {
+  margin-top: 6px;
+}
+.oh-pillar-actions-title {
+  display: block;
+  font: 600 10.5px system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mut);
+  margin-bottom: 4px;
+}
+
+.oh-pillar-source {
+  margin: auto 0 0;
+  padding-top: 12px;
+  font: 11px system-ui, sans-serif;
+  color: var(--mut);
+  border-top: 1px solid var(--line);
+}
+
+/* ---------- Alert banner ---------- */
+.oh-alert {
+  padding: 20px 22px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  border-left: 6px solid;
+}
+.oh-alert-bad {
+  background: var(--red-bg);
+  border-left-color: var(--red);
+}
+.oh-alert-good {
+  background: var(--green-bg);
+  border-left-color: var(--green);
+}
+.oh-alert-title {
+  display: block;
+  font: 600 15px system-ui, sans-serif;
+  margin-bottom: 10px;
+}
+.oh-alert-bad .oh-alert-title { color: var(--red); }
+.oh-alert-good .oh-alert-title { color: var(--green); }
+
+.oh-alert p {
+  font: 13.5px/1.55 system-ui, sans-serif;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
+.oh-alert-checks {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+  font: 13px/1.5 system-ui, sans-serif;
+  color: var(--ink);
+}
+.oh-alert-checks li {
+  padding: 3px 0;
+}
+.check-ok { color: var(--green); font-weight: 700; }
+.check-no { color: var(--mut);  font-weight: 700; }
+
+.oh-alert-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.oh-alert-actions button {
+  padding: 8px 16px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  font: 600 13px system-ui, sans-serif;
+  cursor: pointer;
+  min-height: 38px;
+  transition: all 0.15s;
+}
+.oh-alert-actions button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ---------- Export ---------- */
+.oh-export {
+  padding: 18px 22px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+.oh-export-title {
+  font: 600 15px Georgia, serif;
+  margin: 0 0 12px;
+  color: var(--ink);
+}
+.oh-export-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.oh-export-actions button,
+.oh-export-link {
+  padding: 8px 16px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  font: 600 13px system-ui, sans-serif;
+  cursor: pointer;
+  min-height: 38px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.15s;
+}
+.oh-export-actions button:hover,
+.oh-export-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.oh-export code {
+  background: var(--bg);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 11.5px;
+}
+
+/* ---------- Footer ---------- */
+.oh-footer {
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* ---------- Error ---------- */
+.oh-error {
+  padding: 12px 16px;
+  background: var(--red-bg);
+  color: var(--red);
+  border-radius: 8px;
+  font: 13px system-ui, sans-serif;
+  margin-bottom: 16px;
+}
+
+/* ============================================================ */
+/* Responsive                                                   */
+/* ============================================================ */
+@media (max-width: 1024px) {
+  .oh-page { padding: 20px; }
+}
+
+@media (max-width: 850px) {
+  .oh-pillars {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .oh-pillar-arrow {
+    transform: rotate(90deg);
+    justify-self: center;
+    margin: -2px 0;
+    font-size: 20px;
+  }
+  .oh-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .oh-site-picker {
+    width: 100%;
+  }
+  .oh-site-picker select {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .oh-page { padding: 14px; }
+  .oh-heading { font-size: 20px; }
+  .oh-meta { padding: 14px 16px; }
+  .oh-meta-site { font-size: 17px; }
+  .oh-pillar { padding: 16px; }
+  .oh-pillar-title { font-size: 15px; }
+  .oh-alert { padding: 16px; }
+  .oh-alert-actions button { flex: 1; }
+  .oh-export-actions button,
+  .oh-export-link { flex: 1; justify-content: center; }
+}
