@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { API, levelClass, levelText, urgencyInfo } from "../lib/api.js";
+import ListenButton from "../components/ListenButton.jsx";
 
 /* ============================================================
    Glossary — plain-language definitions for every jargon term.
@@ -698,13 +699,7 @@ export default function CardsPage({ sites = [], onToast }) {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                    <button
-                      className="px-3.5 py-2 rounded-xl bg-black/20 hover:bg-teal-500/20 text-[var(--ink)] hover:text-teal-300 text-xs font-semibold flex items-center gap-2 transition-all"
-                      onClick={() => onToast("Listen assessment (voice synthesis ready)")}
-                    >
-                      <span className="material-symbols-outlined text-sm text-teal-400">volume_up</span>
-                      <span>Listen Assessment</span>
-                    </button>
+                    <ListenButton card={card} />
 
                     <button
                       className="px-3.5 py-2 rounded-xl bg-black/20 hover:bg-teal-500/20 text-[var(--ink)] hover:text-teal-300 text-xs font-semibold flex items-center gap-2 transition-all"
