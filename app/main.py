@@ -70,19 +70,20 @@ def create_app(store: Store = None) -> FastAPI:
             name="static",
         )
 
-    # On startup, ensure the database is ready
     @app.on_event("startup")
-    async def startup_event():
-        db_path = "onehealth.db"
-        if not os.path.exists(db_path):
-            print("Database not found, running initial pipeline to populate data...")
+    async def ensure_data():
+        import os
+        if not os.path.exists("onehealth.db"):
             try:
-                # This script should load your mock data and run the pipeline
-                import subprocess
-                subprocess.run(["python", "scripts/demo_persist.py"], check=True)
-                print("Database populated successfully.")
+                from app.schemas.raw_observation import RawObservation
+                from app.pipeline.orchestrator import run_pipeline
+                import json
+                with open("data/mock_observations.json") as f:
+                    raw = [RawObservation(**item) for item in json.load(f)]
+                await run_pipeline(raw, app.state.store, enrich_weather=False)
+                print(f"[startup] populated {len(raw)} observations")
             except Exception as e:
-                print(f"Error running initial data pipeline: {e}")
+                print(f"[startup] population failed: {e}")
 
     return app
 
