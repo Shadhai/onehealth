@@ -22,6 +22,24 @@ def create_app(store: Store = None) -> FastAPI:
         version="0.1.0",
     )
 
+    from fastapi.middleware.cors import CORSMiddleware
+
+    # CORS — allow the deployed frontend to call this API.
+    # Update origins if you deploy under a different domain.
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[
+            "https://onehealth-frontend-efkn5at87-md18.vercel.app",
+            "https://*.vercel.app",
+            "http://localhost:5173",
+            "http://localhost:4173",
+        ],
+        allow_origin_regex=r"https://.*\.vercel\.app",
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allow_headers=["*"],
+    )
+
     # Attach the store to app.state so routes can access it.
     app.state.store = store if store is not None else Store("onehealth.db")
 
