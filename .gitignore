@@ -153,3 +153,5 @@ $RECYCLE.BIN/
 # !pytest.ini
 # !conftest.py
 # !README.md
+frontend/videos/*.mp4
+frontend/videos/*.jpg

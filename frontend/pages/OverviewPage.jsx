@@ -235,7 +235,7 @@ export default function OverviewPage({ sites = [], summary = null, onNavigate, o
           ============================================================ */}
       <section className="cin-hero" id="hero">
         <video autoPlay className="cin-hero-video" loop muted playsInline>
-          <source src="/videos/Video Project 3.mp4" type="video/mp4" />
+          <source src="https://drive.google.com/file/d/16wwmWm6FV7b-dlHaxuXsk6ooQ04FEFOc/view?usp=sharing" type="video/mp4" />
         </video>
         <canvas ref={canvasRef} className="cin-hero-video-fallback-canvas" />
         <div className="cin-hero-vignette" />

@@ -5,7 +5,6 @@ FastAPI application for OneHealth Lens.
 Uses a factory so tests can inject their own in-memory Store.
 """
 from fastapi import FastAPI
-from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.db import Store
@@ -36,24 +35,22 @@ def create_app(store: Store = None) -> FastAPI:
     def health():
         return {"status": "ok"}
 
+    # Static frontend — only mount if a production build exists.
+    # In development, React runs on Vite (port 5173) and proxies to us.
     import os
-    frontend_dir = "static/dist" if os.path.isdir("static/dist") else "static"
-    frontend_entry = os.path.join(frontend_dir, "index.html")
 
-    # Serve the React entry for direct browser navigation to each page URL.
-    @app.get("/overview", include_in_schema=False)
-    @app.get("/cards", include_in_schema=False)
-    @app.get("/audit", include_in_schema=False)
-    @app.get("/onehealth", include_in_schema=False) 
-    @app.get("/dashboard", include_in_schema=False)
-    @app.get("/maps", include_in_schema=False)
-    @app.get("/map", include_in_schema=False)
-    def frontend_page():
-        return FileResponse(frontend_entry)
+    frontend_dir = None
+    for candidate in ("frontend/dist", "static/dist"):
+        if os.path.isdir(candidate):
+            frontend_dir = candidate
+            break
 
-    # Static frontend at "/" — registered last so it never shadows API routes.
-    if os.path.isdir(frontend_dir):
-        app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="static")
+    if frontend_dir:
+        app.mount(
+            "/",
+            StaticFiles(directory=frontend_dir, html=True),
+            name="static",
+        )
 
     return app
 
