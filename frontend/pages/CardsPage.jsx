@@ -162,6 +162,24 @@ export default function CardsPage({ sites = [], onToast }) {
   const [card, setCard] = useState(null);
   const [flags, setFlags] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showGuide, setShowGuide] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("ohl-impact-cards-guide-seen") !== "true";
+  });
+
+  const closeGuide = () => {
+    localStorage.setItem("ohl-impact-cards-guide-seen", "true");
+    setShowGuide(false);
+  };
+
+  useEffect(() => {
+    if (!showGuide) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") closeGuide();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [showGuide]);
 
   useEffect(() => {
     if (!activeSite && sites.length) setActiveSite(sites[0]);
@@ -213,9 +231,20 @@ export default function CardsPage({ sites = [], onToast }) {
                   Catchment Basin
                 </span>
               </div>
-              <span className="text-[11px] font-mono-code px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-300">
-                {sites.length} Sites Live
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-mono-code px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-300">
+                  {sites.length} Sites Live
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowGuide(true)}
+                  className="w-8 h-8 rounded-xl bg-black/20 border border-[var(--border-line)] text-teal-300 hover:bg-teal-500/15 hover:border-teal-400/50 transition-all flex items-center justify-center"
+                  aria-label="Open Impact Cards guide"
+                  title="Open Impact Cards guide"
+                >
+                  <span className="material-symbols-outlined text-base">help</span>
+                </button>
+              </div>
             </div>
 
             <select
@@ -738,6 +767,70 @@ export default function CardsPage({ sites = [], onToast }) {
           )}
         </section>
       </div>
+
+      {showGuide && (
+        <div
+          className="fixed inset-0 z-[200] bg-slate-950/75 backdrop-blur-sm p-4 sm:p-6 flex items-center justify-center"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) closeGuide();
+          }}
+        >
+          <section
+            className="w-full max-w-2xl glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl border-teal-400/30"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="impact-cards-guide-title"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <span className="text-[11px] font-mono-code uppercase tracking-widest text-teal-400">
+                  Impact Cards / Field Guide
+                </span>
+                <h2 id="impact-cards-guide-title" className="font-serif-title text-2xl sm:text-3xl font-bold text-[var(--ink)] mt-2">
+                  Read a catchment as a living system
+                </h2>
+                <p className="text-sm text-[var(--ink-dim)] leading-relaxed mt-2">
+                  Each card turns one monitored segment into an auditable risk story.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={closeGuide}
+                className="w-9 h-9 shrink-0 rounded-xl bg-black/20 border border-[var(--border-line)] text-[var(--ink-dim)] hover:text-[var(--ink)] hover:border-teal-400/50 transition-all flex items-center justify-center"
+                aria-label="Close Impact Cards guide"
+              >
+                <span className="material-symbols-outlined text-lg">close</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-7">
+              {[
+                ["01", "Choose a segment", "Start with the risk-sorted list to focus on the catchment that needs attention."],
+                ["02", "Compare three pillars", "Ecosystem, animal, and human-health signals combine into one transparent index."],
+                ["03", "Trace the evidence", "Open diagnostic triggers, recommended actions, validation flags, and the FHIR bundle."],
+              ].map(([number, title, description]) => (
+                <div key={number} className="rounded-2xl bg-black/20 border border-[var(--border-line)] p-4">
+                  <span className="text-xs font-mono-code text-teal-400">{number}</span>
+                  <h3 className="text-sm font-bold text-[var(--ink)] mt-3">{title}</h3>
+                  <p className="text-xs text-[var(--ink-dim)] leading-relaxed mt-2">{description}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 mt-7 pt-5 border-t border-[var(--border-line)]">
+              <p className="text-[11px] font-mono-code text-[var(--ink-dim)]">You can reopen this guide with the ? button.</p>
+              <button
+                type="button"
+                onClick={closeGuide}
+                className="px-4 py-2.5 rounded-xl bg-teal-500 text-slate-950 hover:bg-teal-400 text-xs font-bold transition-all shadow-lg shadow-teal-500/20"
+              >
+                Explore Impact Cards
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
     </main>
   );
 }

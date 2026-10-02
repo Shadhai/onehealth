@@ -89,4 +89,16 @@ describe("App shell", () => {
       expect(screen.getByText("Painel")).toBeInTheDocument();
     });
   });
+
+  it("shows and remembers the Impact Cards onboarding guide", async () => {
+    const user = userEvent.setup();
+    renderApp();
+    await waitFor(() => screen.getByText("Impact Cards"));
+    await user.click(screen.getByRole("button", { name: "Impact Cards" }));
+
+    expect(await screen.findByRole("dialog", { name: /living system/i })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /explore impact cards/i }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(localStorage.getItem("ohl-impact-cards-guide-seen")).toBe("true");
+  });
 });

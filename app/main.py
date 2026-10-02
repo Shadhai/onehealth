@@ -4,6 +4,8 @@ FastAPI application for OneHealth Lens.
 
 Uses a factory so tests can inject their own in-memory Store.
 """
+import os
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
@@ -40,8 +42,15 @@ def create_app(store: Store = None) -> FastAPI:
         allow_headers=["*"],
     )
 
-    # Attach the store to app.state so routes can access it.
-    app.state.store = store if store is not None else Store("onehealth.db")
+    # Attach the store to app.state so routes can access it. PostgreSQL is
+    # opt-in through DATABASE_URL; local development keeps SQLite by default.
+    if store is not None:
+        app.state.store = store
+    elif os.getenv("DATABASE_URL"):
+        from app.db_sqlalchemy import SQLAlchemyStore
+        app.state.store = SQLAlchemyStore(os.environ["DATABASE_URL"])
+    else:
+        app.state.store = Store("onehealth.db")
 
     # API routers — must be registered BEFORE the static mount.
     app.include_router(ingest.router,   prefix="/ingest",   tags=["ingest"])
@@ -55,8 +64,6 @@ def create_app(store: Store = None) -> FastAPI:
 
     # Static frontend — only mount if a production build exists.
     # In development, React runs on Vite (port 5173) and proxies to us.
-    import os
-
     frontend_dir = None
     for candidate in ("frontend/dist", "static/dist"):
         if os.path.isdir(candidate):

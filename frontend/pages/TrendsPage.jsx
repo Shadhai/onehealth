@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { API, levelText } from "../lib/api.js";
+import { forecastRisk } from "../lib/forecast.js";
 
 /* ============================================================
    Trends page — matches "Catchment Telemetry Trends" design
@@ -39,6 +40,11 @@ export default function TrendsPage({ sites = [], insights = [] }) {
 
   const latest = series[series.length - 1];
   const latestIdx = Number(latest?.risk_index || 0);
+  const forecast = useMemo(() => forecastRisk(series, 7), [series]);
+  const forecastEnd = forecast.predictions[forecast.predictions.length - 1];
+  const forecastDirection = forecast.slopePerDay > 0.001
+    ? "Rising"
+    : forecast.slopePerDay < -0.001 ? "Falling" : "Stable";
 
   return (
     <main className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
@@ -174,6 +180,69 @@ export default function TrendsPage({ sites = [], insights = [] }) {
           </div>
           <p className="text-xs text-[var(--ink-dim)]">Precipitation triggered 6-hour turbidity surge</p>
         </div>
+      </section>
+
+      {/* Seven-day linear risk forecast */}
+      <section className="glass-panel rounded-2xl p-6 mb-8 shadow-xl">
+        <div className="flex flex-wrap items-start justify-between gap-4 mb-5">
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-base font-bold text-[var(--ink)]">7-Day Risk Forecast</h2>
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono-code bg-teal-500/15 text-teal-300">
+                Linear regression
+              </span>
+            </div>
+            <p className="text-xs text-[var(--ink-dim)] mt-1">
+              Projected from the selected segment&apos;s historical risk-index trend.
+            </p>
+          </div>
+          {forecast.available && (
+            <div className="flex items-center gap-3 text-xs font-mono-code">
+              <span className={forecastDirection === "Rising" ? "text-rose-400" : forecastDirection === "Falling" ? "text-emerald-400" : "text-[var(--ink-dim)]"}>
+                {forecastDirection}
+              </span>
+              <span className="text-[var(--ink-dim)]">R² {forecast.rSquared.toFixed(2)}</span>
+            </div>
+          )}
+        </div>
+
+        {!forecast.available ? (
+          <p className="text-xs text-[var(--ink-dim)] py-4 text-center">
+            At least two dated observations are needed for a forecast.
+          </p>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-end gap-3">
+              <div>
+                <p className="text-[10px] uppercase tracking-wider font-mono-code text-[var(--ink-dim)]">Day 7 projection</p>
+                <p className="text-3xl font-extrabold font-mono-code text-[var(--ink)]">
+                  {forecastEnd.risk_index.toFixed(2)}
+                </p>
+              </div>
+              <p className="text-xs text-[var(--ink-dim)] pb-1">
+                {new Date(forecastEnd.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                <span className="mx-2 text-teal-400">·</span>
+                {forecast.slopePerDay >= 0 ? "+" : ""}{forecast.slopePerDay.toFixed(3)} per day
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+              {forecast.predictions.map((point) => (
+                <div key={point.date} className="rounded-xl bg-black/20 border border-[var(--border-line)] p-3">
+                  <p className="text-[10px] font-mono-code text-[var(--ink-dim)]">
+                    {new Date(point.date).toLocaleDateString(undefined, { weekday: "short" })}
+                  </p>
+                  <p className="text-sm font-bold font-mono-code text-[var(--ink)] mt-1">
+                    {point.risk_index.toFixed(2)}
+                  </p>
+                  <div className="h-1.5 rounded-full bg-black/30 overflow-hidden mt-2">
+                    <div className="h-full rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500" style={{ width: `${point.risk_index * 100}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Charts grid */}

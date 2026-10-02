@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { API, levelClass, levelText } from "../lib/api.js";
+
+const BioIndicator = lazy(() => import("../components/BioIndicator.jsx"));
 
 /* ============================================================
    Overview page — cinematic hero with looping video, water
@@ -734,11 +736,9 @@ export default function OverviewPage({ sites = [], summary = null, onNavigate, o
       <section className="relative z-10 px-6 md:px-14 py-24 border-t border-teal-950/70 bg-[#071311]">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="relative w-full aspect-square max-w-[480px] mx-auto rounded-3xl overflow-hidden glass-panel group">
-            <img
-              src="/videos/images.jpg"
-              alt="Underwater octopus — indicator of aquatic ecosystem health"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
+            <Suspense fallback={<div className="bio-container" aria-label="Loading 3D bio-indicator" />}>
+              <BioIndicator />
+            </Suspense>
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
             <div className="absolute left-5 bottom-5 px-3 py-2 rounded-xl bg-slate-950/80 border border-teal-500/30 backdrop-blur-md pointer-events-none transition-transform group-hover:scale-105">
               <span className="block text-xs font-mono-code font-semibold text-teal-300">

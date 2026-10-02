@@ -81,7 +81,13 @@ export default function ListenButton({ card }) {
     // Pick the right voice for the language.
     try {
       const voices = window.speechSynthesis.getVoices() || [];
-      const langPrefix = lang === "pt" ? "pt" : "en";
+      const langPrefix = {
+        pt: "pt",
+        fr: "fr",
+        it: "it",
+        nl: "nl",
+        no: "no",
+      }[lang] || "en";
       const preferred =
         voices.find((v) => v.lang?.startsWith(langPrefix) && /google|natural|neural/i.test(v.name)) ||
         voices.find((v) => v.lang?.startsWith(langPrefix));
@@ -89,10 +95,22 @@ export default function ListenButton({ card }) {
         utter.voice = preferred;
         utter.lang = preferred.lang;
       } else {
-        utter.lang = lang === "pt" ? "pt-PT" : "en-GB";
+        utter.lang = {
+          pt: "pt-PT",
+          fr: "fr-FR",
+          it: "it-IT",
+          nl: "nl-NL",
+          no: "nb-NO",
+        }[lang] || "en-GB";
       }
     } catch {
-      utter.lang = lang === "pt" ? "pt-PT" : "en-GB";
+      utter.lang = {
+        pt: "pt-PT",
+        fr: "fr-FR",
+        it: "it-IT",
+        nl: "nl-NL",
+        no: "nb-NO",
+      }[lang] || "en-GB";
     }
 
     utter.rate = 1.0;

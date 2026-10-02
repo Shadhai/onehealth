@@ -59,6 +59,13 @@ body {
 }
 .glass-panel:hover { border-color: var(--border-line-strong); }
 
+.bio-container,
+.bio-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .glow-cyan { box-shadow: 0 0 25px -4px var(--glow); }
 
 .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }

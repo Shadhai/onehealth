@@ -2,17 +2,14 @@ import { describe, it, expect } from "vitest";
 import { STRINGS, t, LANGUAGES } from "../lib/i18n.js";
 
 describe("i18n dictionary", () => {
-  it("ships at least two languages", () => {
-    expect(LANGUAGES.length).toBeGreaterThanOrEqual(2);
-    expect(LANGUAGES.map((l) => l.code)).toContain("en");
-    expect(LANGUAGES.map((l) => l.code)).toContain("pt");
+  it("ships all supported languages", () => {
+    expect(LANGUAGES.map((l) => l.code)).toEqual(["en", "pt", "fr", "it", "nl", "no"]);
   });
 
-  it("has matching keys in EN and PT", () => {
+  it("has matching keys in every dictionary", () => {
     const enKeys = Object.keys(STRINGS.en).sort();
-    const ptKeys = Object.keys(STRINGS.pt).sort();
-    for (const key of enKeys) {
-      expect(ptKeys).toContain(key);
+    for (const language of LANGUAGES) {
+      expect(Object.keys(STRINGS[language.code]).sort()).toEqual(enKeys);
     }
   });
 

@@ -68,6 +68,11 @@ frontend/.vite/
 coverage/
 validator_cli.jar
 
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
 # ============================================================
 # Project-specific artifacts
 # ============================================================
