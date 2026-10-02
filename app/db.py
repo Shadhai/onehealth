@@ -124,7 +124,6 @@ class Store:
             "(submission_id, payload, ingested_at) VALUES (?, ?, ?)",
             (raw.submission_id or "unknown", _json(raw), _now()),
         )
-        self.conn.commit()
 
     def save_normalized(self, obs: NormalizedObservation) -> None:
         self.conn.execute(
@@ -134,7 +133,6 @@ class Store:
             (obs.observation_id, obs.submission_id, _json(obs),
              obs.completeness_score, _now()),
         )
-        self.conn.commit()
 
     def save_validated(self, obs: ValidatedObservation) -> None:
         self.conn.execute(
@@ -144,7 +142,6 @@ class Store:
             (obs.observation_id, _json(obs), obs.validation_status,
              len(obs.flags), _now()),
         )
-        self.conn.commit()
 
     def save_enriched(self, enriched: EnrichedObservation) -> None:
         self.conn.execute(
@@ -152,7 +149,6 @@ class Store:
             "(observation_id, payload, enriched_at) VALUES (?, ?, ?)",
             (enriched.observation.observation_id, _json(enriched), _now()),
         )
-        self.conn.commit()
 
     def save_insight(self, insight: OneHealthInsight) -> None:
         self.conn.execute(
@@ -162,7 +158,6 @@ class Store:
             (insight.observation_id, _json(insight), insight.research_site,
              insight.risk_index, insight.risk_level, insight.generated_at.isoformat()),
         )
-        self.conn.commit()
 
     def save_fhir_bundle(self, observation_id: str, bundle_json: str) -> None:
         self.conn.execute(
@@ -170,6 +165,9 @@ class Store:
             "(observation_id, bundle, created_at) VALUES (?, ?, ?)",
             (observation_id, bundle_json, _now()),
         )
+
+    def flush(self) -> None:
+        """Commit pending stage writes."""
         self.conn.commit()
 
     # ---------------------------------------------------------------

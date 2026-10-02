@@ -1,6 +1,7 @@
 import numpy as np
 from datetime import datetime
 from typing import List
+from sklearn.ensemble import IsolationForest
 from app.schemas.normalized_observation import NormalizedObservation
 from app.schemas.validated_observation import ValidatedObservation, ValidationFlag
 
@@ -92,30 +93,52 @@ NUMERIC_FIELDS_FOR_AI = [
 ]
 
 
+def fit_site_models(observations: List[NormalizedObservation]) -> dict:
+	"""Fit one anomaly model per site for reuse during batch validation."""
+	from collections import defaultdict
+
+	by_site = defaultdict(list)
+	for obs in observations:
+		by_site[obs.research_site].append(obs)
+
+	models = {}
+	for site, group in by_site.items():
+		numeric_data = [
+			[getattr(obs, field) for field in NUMERIC_FIELDS_FOR_AI]
+			for obs in group
+			if all(getattr(obs, field) is not None for field in NUMERIC_FIELDS_FOR_AI)
+		]
+		if len(numeric_data) < 10:
+			continue
+
+		X = np.array(numeric_data)
+		model = IsolationForest(
+			contamination=0.1,
+			random_state=42,
+			n_estimators=50,
+			n_jobs=-1,
+		)
+		model.fit(X)
+		models[site] = {"model": model, "X": X}
+
+	return models
+
+
 def run_ai_anomaly(
 	obs: NormalizedObservation,
-	historical: List[NormalizedObservation],
+	site_models: dict,
 ) -> List[ValidationFlag]:
-	if len(historical) < 10:
+	entry = site_models.get(obs.research_site)
+	if not entry:
 		return []
 
-	X_hist = np.array([
-		[getattr(h, f) for f in NUMERIC_FIELDS_FOR_AI]
-		for h in historical
-		if all(getattr(h, f) is not None for f in NUMERIC_FIELDS_FOR_AI)
-	])
-	if len(X_hist) < 10:
+	row = [getattr(obs, field) for field in NUMERIC_FIELDS_FOR_AI]
+	if any(value is None for value in row):
 		return []
 
-	row = [getattr(obs, f) for f in NUMERIC_FIELDS_FOR_AI]
-	if any(v is None for v in row):
-		return []
+	model = entry["model"]
+	X_hist = entry["X"]
 	X_current = np.array([row])
-
-	from sklearn.ensemble import IsolationForest
-
-	model = IsolationForest(contamination=0.1, random_state=42)
-	model.fit(X_hist)
 	pred = model.predict(X_current)[0]
 
 	if pred == -1:
@@ -139,12 +162,12 @@ def run_ai_anomaly(
 
 def validate(
 	obs: NormalizedObservation,
-	historical: List[NormalizedObservation],
+	site_models: dict,
 ) -> ValidatedObservation:
 	flags = []
 	flags += run_numeric_rules(obs)
 	flags += run_consistency_rules(obs)
-	flags += run_ai_anomaly(obs, historical)
+	flags += run_ai_anomaly(obs, site_models)
 
 	has_error = any(f.severity == "ERROR" for f in flags)
 	has_warning = any(f.severity == "WARNING" for f in flags)
@@ -159,12 +182,5 @@ def validate(
 
 
 def validate_batch(observations: List[NormalizedObservation]) -> List[ValidatedObservation]:
-	results = []
-	for obs in observations:
-		historical = [
-			h for h in observations
-			if h.research_site == obs.research_site
-			and h.observation_id != obs.observation_id
-		]
-		results.append(validate(obs, historical))
-	return results
+	site_models = fit_site_models(observations)
+	return [validate(obs, site_models) for obs in observations]

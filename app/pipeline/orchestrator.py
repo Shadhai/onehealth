@@ -41,16 +41,19 @@ async def run_pipeline(
     # Persist raw
     for raw in raw_observations:
         store.save_raw(raw)
+    store.flush()
 
     # Stage 2: Normalize + dedupe
     normalized = deduplicate(normalize_batch(raw_observations))
     for n in normalized:
         store.save_normalized(n)
+    store.flush()
 
     # Stage 3: Validate
     validated = validate_batch(normalized)
     for v in validated:
         store.save_validated(v)
+    store.flush()
 
     # Stage 4: Enrich
     enriched_list: List[EnrichedObservation] = []
@@ -65,15 +68,18 @@ async def run_pipeline(
             )
         store.save_enriched(e)
         enriched_list.append(e)
+    store.flush()
 
     # Stage 5: Correlate
     insights = correlate_batch(enriched_list)
     for i in insights:
         store.save_insight(i)
+    store.flush()
 
     # Stage 6: FHIR Map
     for e, i in zip(enriched_list, insights):
         bundle = to_fhir_bundle(e, i)
         store.save_fhir_bundle(i.observation_id, serialize_bundle(bundle))
+    store.flush()
 
     return insights

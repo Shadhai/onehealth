@@ -1,0 +1,25 @@
+{
+  "dataset": "data\\synthetic_observations.json",
+  "input_count": 500,
+  "output_count": 500,
+  "elapsed_seconds": 23.262,
+  "throughput_obs_per_second": 21.5,
+  "avg_latency_ms_per_observation": 46.523,
+  "peak_memory_mb": 7.82,
+  "stages_completed": 9,
+  "errors": 0,
+  "test_environment": "Python 3.11, in-memory SQLite, Open-Meteo disabled",
+  "database": {
+    "raw": 500,
+    "normalized": 500,
+    "validated": 500,
+    "enriched": 500,
+    "insights": 500,
+    "bundles": 500
+  },
+  "risk_distribution": {
+    "High": 79,
+    "Moderate": 109,
+    "Low": 312
+  }
+}
