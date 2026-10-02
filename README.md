@@ -50,6 +50,53 @@ The validation stage fits one anomaly model per research site and reuses it
 across the batch. Database writes are committed once per stage rather than once
 per row.
 
+## Architecture
+
+```mermaid
+flowchart LR
+   Sources["Citizen reports\nMock / API / CSV"] --> Ingest["1. Ingest"]
+   Ingest --> Normalize["2. Normalize\nUnits + field mapping"]
+   Normalize --> Validate["3. Validate\nRules + Isolation Forest"]
+   Validate --> Enrich["4. Enrich\nOpen-Meteo context"]
+   Enrich --> Correlate["5. Correlate\n50% Eco / 30% Fauna / 20% Human"]
+   Correlate --> FHIR["6. FHIR Map\nR4 + OAH profiles"]
+   Correlate --> Insight["7. Insight\nExplainable cards"]
+   FHIR --> Store["8. Store\nSQLite or PostgreSQL"]
+   Insight --> Store
+   Store --> API["FastAPI\nSites / trends / flags / FHIR"]
+   API --> UI["React + Vite\nDashboard / Cards / Map / Audit"]
+   UI --> Actions["CSV / FHIR preview\nPrint / copy / listen"]
+   Store --> Distribute["9. Distribute\nCommunity cards + GIS"]
+```
+
+## How It Works
+
+1. A citizen report enters through the ingest route or a local fixture. The
+  original payload is retained so every later result can be traced back to its
+  source observation.
+2. The normalization stage maps source fields into the typed observation
+  schema and converts units such as Fahrenheit, oxygen saturation, g/L, and
+  mS/cm into analysis-ready values.
+3. Validation applies hard numeric bounds, cross-field consistency checks, and
+  one reusable anomaly model per research site. Each flag includes a rule ID,
+  severity, value, message, and explanation.
+4. Optional weather enrichment adds precipitation and temperature context. The
+  pipeline can disable network enrichment for deterministic tests and load
+  benchmarks.
+5. Correlation calculates the One Health Risk Index from ecosystem, animal, and
+  human evidence. The result includes the three pillar scores, causal links,
+  confidence, risk band, and recommended actions.
+6. The FHIR stage maps the observation and insight into a FHIR R4 collection
+  bundle with OAH profile metadata. The insight stage creates the frontend card
+  representation from the same typed result.
+7. Every stage is stored with its payload. SQLite is the default local adapter;
+  `DATABASE_URL` switches the application to the SQLAlchemy PostgreSQL adapter.
+8. FastAPI exposes the stored data to the React frontend. The UI adds search,
+  filtering, trends, a seven-day regression forecast, maps, audit views, and
+  FHIR/CSV actions without changing the underlying evidence.
+9. CI verifies the backend, frontend, FHIR structure, 500-record load test, and
+  browser workflows on every push or pull request.
+
 ## Product Features
 
 ### Analytical frontend
