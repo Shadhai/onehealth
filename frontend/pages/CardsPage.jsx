@@ -684,13 +684,13 @@ export default function CardsPage({ sites = [], onToast }) {
               )}
 
               {/* Actions */}
-              <div className="glass-panel rounded-3xl p-5 shadow-2xl space-y-4">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-teal-500/20 flex items-center justify-center text-teal-400">
+              <div className="glass-panel rounded-3xl p-4 sm:p-5 shadow-2xl space-y-4">
+                <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-8 h-8 shrink-0 rounded-xl bg-teal-500/20 flex items-center justify-center text-teal-400">
                       <span className="material-symbols-outlined text-lg">token</span>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-xs font-bold text-[var(--ink)]">FHIR Observation / OAH IG Compliant</p>
                       <p className="text-[10px] font-mono-code text-[var(--ink-dim)]">
                         HL7 v4.0.1 Resource Bundle · Code: 98112-9
@@ -698,11 +698,11 @@ export default function CardsPage({ sites = [], onToast }) {
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex items-stretch lg:items-center gap-2 w-full lg:w-auto">
                     <ListenButton card={card} />
 
                     <button
-                      className="px-3.5 py-2 rounded-xl bg-black/20 hover:bg-teal-500/20 text-[var(--ink)] hover:text-teal-300 text-xs font-semibold flex items-center gap-2 transition-all"
+                      className="min-h-10 px-3.5 py-2 rounded-xl bg-black/20 hover:bg-teal-500/20 border border-[var(--border-line)] text-[var(--ink)] hover:text-teal-300 text-xs font-semibold flex items-center justify-center gap-2 transition-all"
                       onClick={() => {
                         const text = `${card.site} — ${levelText(card.risk.level)} (${Number(card.risk.index).toFixed(2)})\n\n` +
                           card.columns.map((c) => `${c.title}: ${c.level} (${Number(c.score).toFixed(2)})`).join("\n");
@@ -715,7 +715,7 @@ export default function CardsPage({ sites = [], onToast }) {
                     </button>
 
                     <button
-                      className="px-3.5 py-2 rounded-xl bg-black/20 hover:bg-teal-500/20 text-[var(--ink)] hover:text-teal-300 text-xs font-semibold flex items-center gap-2 transition-all"
+                      className="min-h-10 px-3.5 py-2 rounded-xl bg-black/20 hover:bg-teal-500/20 border border-[var(--border-line)] text-[var(--ink)] hover:text-teal-300 text-xs font-semibold flex items-center justify-center gap-2 transition-all"
                       onClick={() => window.print()}
                     >
                       <span className="material-symbols-outlined text-sm text-teal-400">print</span>
@@ -723,7 +723,7 @@ export default function CardsPage({ sites = [], onToast }) {
                     </button>
 
                     <a
-                      className="px-4 py-2 rounded-xl bg-teal-500 text-slate-950 hover:bg-teal-400 text-xs font-bold flex items-center gap-2 transition-all shadow-lg shadow-teal-500/20"
+                      className="min-h-10 sm:col-span-2 lg:col-span-1 px-4 py-2 rounded-xl bg-teal-500 text-slate-950 hover:bg-teal-400 text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-teal-500/20"
                       href={API.fhirUrl(card.observation_id)}
                       target="_blank"
                       rel="noopener noreferrer"
