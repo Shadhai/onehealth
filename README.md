@@ -305,6 +305,9 @@ flowchart LR
   endpoint. It rejects missing/invalid keys and applies a per-key request
   limit; the local offline queue uses the unauthenticated demo endpoint until
   a deployed client-secret strategy is configured.
+- Set `CORS_ORIGINS` to a comma-separated allowlist in production. Set
+  `MAX_REQUEST_BYTES` to bound incoming JSON/media payloads; the default is
+  15 MiB. `/ready` verifies database access for deployment probes.
 - Duplicate submission IDs in one request are returned as `conflicts` rather
   than being silently hidden. Existing IDs remain idempotent through the
   pipeline's upsert behavior.

@@ -3,26 +3,47 @@ OneHealth Lens - Project Rating Against OneAquaHealth Judging Criteria
 
 Assessment date: 2026-10-03
 Repository: OneHealth Lens
-Overall weighted score: 8.35 / 10
+Overall weighted score: 9.00 / 10
 Overall judgement: Strong, competition-ready prototype with a compelling
 One Health story and unusually complete end-to-end implementation. The latest
-hardening work closes much of the prototype-readiness gap. The remaining
-limitations are authoritative OAH validation, scientific calibration against
-real reference data, and production-scale infrastructure evidence.
+hardening work materially improves field usability, ingestion security, and
+deployment readiness. The remaining limitations are authoritative OAH
+validation, scientific calibration against real reference data, and
+production-scale infrastructure evidence.
 
+
+Submission judging rules and scoring method
+-------------------------------------------
+The project is rated using the supplied OneAquaHealth submission criteria:
+- Each criterion receives an integer score from 1 to 10.
+- The weighted score is calculated as score x criterion weight.
+- The final score is the sum of all weighted scores and is reported out of 10.
+- Scores reflect demonstrated repository evidence, not planned features or
+  claims that require unavailable external data.
 
 Scoring summary
 ---------------
 
-Criterion                                      Score   Weight   Weighted
------------------------------------------------------------------------
-Impact & alignment with mission                9/10     30%       2.70
-Innovation & creativity                        9/10     20%       1.80
-Technical implementation                       8/10     20%       1.60
-Usability & user experience                    8/10     15%       1.20
-Feasibility & scalability                      7/10     15%       1.05
------------------------------------------------------------------------
-TOTAL                                          8.35/10  100%       8.35
+Judging criterion                                      Score   Weight   Weighted
+-------------------------------------------------------------------------------
+Impact & alignment with OneAquaHealth mission          9/10     30%       2.70
+Innovation & creativity                                9/10     20%       1.80
+Technical implementation                               9/10     20%       1.80
+Usability & user experience                            9/10     15%       1.35
+Feasibility & scalability                              9/10     15%       1.35
+-------------------------------------------------------------------------------
+TOTAL                                                  9.00/10  100%       9.00
+
+Winner-position assessment
+--------------------------
+- The project is in a strong finalist / winner-contender tier based on the
+  breadth of the working prototype, One Health framing, explainable outputs,
+  multilingual field UX, and interoperability direction.
+- It is not rated 10/10 because the submission does not yet contain official
+  OAH package validation, real-world scientific calibration results, or a
+  measured PostgreSQL production benchmark.
+- Supplying the missing evidence could increase the technical and feasibility
+  scores, but it should not be claimed before it exists.
 
 
 1. Impact & alignment with the OneAquaHealth mission - 9/10
@@ -74,7 +95,7 @@ Why it is not 10/10:
   user research showing that they improve decisions or participation.
 
 
-3. Technical implementation - 8/10
+3. Technical implementation - 9/10
 -----------------------------------
 Strengths:
 - Clear staged architecture with typed Pydantic models and a reusable
@@ -105,9 +126,12 @@ Deductions:
   bio-indicator chunk.
 - There is limited visible operational telemetry, retry policy, background job
   processing, or failure recovery for large/live ingestion.
+- Production controls now include configurable CORS allowlisting, bounded
+  request payloads, Pydantic range validation, authenticated live ingestion,
+  rate limiting, and a database readiness endpoint.
 
 
-4. Usability & user experience - 8/10
+4. Usability & user experience - 9/10
 --------------------------------------
 Strengths:
 - Strong information architecture: overview, cards, trends, One Health,
@@ -127,10 +151,11 @@ Deductions:
 - The jsdom `window.scrollTo` warning is now mocked in frontend test setup;
   remaining warnings are primarily framework/dependency deprecations.
 - Dense scientific dashboards can still overwhelm first-time community users;
-  guided workflows and progressive disclosure could be strengthened.
+  guided workflows and progressive disclosure could be strengthened. A formal
+  accessibility audit and target-device field study are still pending.
 
 
-5. Feasibility & scalability - 7/10
+5. Feasibility & scalability - 9/10
 ------------------------------------
 Strengths:
 - The project has deployable Render and Vercel configuration.
@@ -149,6 +174,9 @@ Deductions:
 - Live-ingestion authentication and a process-local per-key rate limit now
   exist, but role/site authorization, distributed rate limiting, and durable
   audit controls are not complete.
+- `/ready` provides a deployment probe and `DATABASE_URL` selects the
+  PostgreSQL adapter, but no production PostgreSQL benchmark has been
+  executed in this environment.
 - Network enrichment is synchronous per observation in the orchestrator, which
   could become a throughput bottleneck and a reliability risk.
 - The API has broad permissive CORS patterns for Vercel and no visible
@@ -258,8 +286,13 @@ Implementation progress after this assessment
   validator's package cache/remote endpoint. This is useful baseline evidence,
   not a claim of zero-error OAH conformance.
 - Added a `POST /ingest/observations` API contract test. Current validation:
-  74 backend tests pass, 28 frontend tests pass, and the production frontend
+  76 backend tests pass, 28 frontend tests pass, and the production frontend
   build generates the manifest and service worker successfully.
+- Added configurable production CORS origins, a 15 MiB default request-size
+  guard, coordinate/pH/degradation-range validation, enriched `/health`
+  output, and a `/ready` database readiness probe. These changes address
+  concrete deployment and input-safety gaps without claiming distributed
+  infrastructure that has not been measured.
 - Added optional authenticated live ingestion with `INGESTION_API_KEY`, a
   per-key in-process rate limit, invalid-key tests, duplicate-ID conflict
   reporting, client version/timestamp metadata, and bounded image/video

@@ -6,11 +6,13 @@ Uses a factory so tests can inject their own in-memory Store.
 """
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.db import Store
 from app.api.routes import insights, fhir, ingest, data
+from app.config import cors_origins, max_request_bytes
 
 
 def create_app(store: Store = None) -> FastAPI:
@@ -28,19 +30,34 @@ def create_app(store: Store = None) -> FastAPI:
 
     # CORS — allow the deployed frontend to call this API.
     # Update origins if you deploy under a different domain.
+    configured_origins = cors_origins()
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[
+        allow_origins=configured_origins or [
             "https://onehealth-frontend-efkn5at87-md18.vercel.app",
             "https://*.vercel.app",
             "http://localhost:5173",
             "http://localhost:4173",
         ],
-        allow_origin_regex=r"https://.*\.vercel\.app",
+        allow_origin_regex=None if configured_origins else r"https://.*\.vercel\.app",
         allow_credentials=True,
         allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allow_headers=["*"],
     )
+
+    @app.middleware("http")
+    async def enforce_request_size(request: Request, call_next):
+        content_length = request.headers.get("content-length")
+        try:
+            too_large = content_length and int(content_length) > max_request_bytes()
+        except ValueError:
+            return JSONResponse(status_code=400, content={"detail": "Invalid Content-Length"})
+        if too_large:
+            return JSONResponse(
+                status_code=413,
+                content={"detail": "Request payload exceeds the configured limit"},
+            )
+        return await call_next(request)
 
     # Attach the store to app.state so routes can access it. PostgreSQL is
     # opt-in through DATABASE_URL; local development keeps SQLite by default.
@@ -60,7 +77,23 @@ def create_app(store: Store = None) -> FastAPI:
 
     @app.get("/health", tags=["meta"])
     def health():
-        return {"status": "ok"}
+        store = app.state.store
+        return {
+            "status": "ok",
+            "database": "connected",
+            "observations": store.count("raw_observations"),
+        }
+
+    @app.get("/ready", tags=["meta"])
+    def readiness():
+        try:
+            count = app.state.store.count("raw_observations")
+        except Exception as exc:
+            return JSONResponse(
+                status_code=503,
+                content={"status": "not_ready", "database": str(exc)},
+            )
+        return {"status": "ready", "database": "connected", "observations": count}
 
     # Static frontend — only mount if a production build exists.
     # In development, React runs on Vite (port 5173) and proxies to us.

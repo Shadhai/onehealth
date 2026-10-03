@@ -31,6 +31,23 @@ def test_health(client):
     r = client.get("/health")
     assert r.status_code == 200
     assert r.json()["status"] == "ok"
+    assert r.json()["database"] == "connected"
+
+
+def test_readiness(client):
+    r = client.get("/ready")
+    assert r.status_code == 200
+    assert r.json()["status"] == "ready"
+
+
+def test_request_size_limit(client, monkeypatch):
+    monkeypatch.setenv("MAX_REQUEST_BYTES", "1048576")
+    response = client.post(
+        "/ingest/observations",
+        headers={"content-length": str(2 * 1024 * 1024)},
+        content="[]",
+    )
+    assert response.status_code == 413
 
 
 def test_list_insights(client):

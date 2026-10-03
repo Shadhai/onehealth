@@ -10,11 +10,11 @@ class RawObservation(BaseModel):
     All fields are optional to accommodate incomplete submissions.
     """
     # Core metadata (verified from StreamCheck and network capture)
-    submission_id: Optional[str] = None
+    submission_id: Optional[str] = Field(default=None, max_length=160)
     user_id: Optional[str] = None
     research_site: Optional[str] = None          # e.g., "Nordre Aker"
-    longitude: Optional[float] = None
-    latitude: Optional[float] = None
+    longitude: Optional[float] = Field(default=None, ge=-180, le=180)
+    latitude: Optional[float] = Field(default=None, ge=-90, le=90)
     submitted_at: Optional[datetime] = None
     client_updated_at: Optional[datetime] = None
     client_version: Optional[int] = None
@@ -30,7 +30,7 @@ class RawObservation(BaseModel):
     water_colour: Optional[str] = None
     water_smell: Optional[str] = None
     water_flow: Optional[str] = None
-    ph: Optional[float] = None
+    ph: Optional[float] = Field(default=None, ge=0, le=14)
     dissolved_oxygen: Optional[float] = None      # unit may be mg/L or % sat
     water_temperature: Optional[float] = None     # unit may be °C or °F
     tds: Optional[float] = None                   # unit may be mg/L or g/L
@@ -46,7 +46,7 @@ class RawObservation(BaseModel):
 
     # Overall rating (verified from StreamCheck: Good, Moderate, Poor)
     overall_rating: Optional[str] = None
-    degradation_score: Optional[int] = None       # 1, 2, 3 from D6.1
+    degradation_score: Optional[int] = Field(default=None, ge=1, le=3)  # 1, 2, 3 from D6.1
 
     # Biological indicators (verified from FHIR IG mappings and D6.1)
     macroinvertebrates: Optional[str] = None
