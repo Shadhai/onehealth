@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { API, levelClass, levelText } from "../lib/api.js";
+import { API, apiFetch, levelClass, levelText } from "../lib/api.js";
 
 const STAGE_ICONS = {
   1: "cloud_download",
@@ -38,8 +38,7 @@ export default function AuditTrail({ sites = [] }) {
     setLoading(true);
     setAudit(null);
     const id = activeSite.latest_observation_id;
-    fetch(`${import.meta.env.VITE_API_URL || ""}/insights/${encodeURIComponent(id)}/audit`)
-      .then((r) => (r.ok ? r.json() : null))
+    apiFetch(`/insights/${encodeURIComponent(id)}/audit`)
       .then((data) => setAudit(data))
       .catch(() => setAudit(null))
       .finally(() => setLoading(false));

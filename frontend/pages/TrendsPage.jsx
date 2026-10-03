@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { API, levelText } from "../lib/api.js";
+import { API, apiFetch, levelText } from "../lib/api.js";
 import { forecastRisk } from "../lib/forecast.js";
 
 /* ============================================================
@@ -17,8 +17,7 @@ export default function TrendsPage({ sites = [], insights = [] }) {
 
   useEffect(() => {
     if (!activeSite?.site) return;
-    fetch(`${import.meta.env.VITE_API_URL || ""}/insights/trends/${encodeURIComponent(activeSite.site)}`)
-      .then((r) => (r.ok ? r.json() : []))
+    apiFetch(`/insights/trends/${encodeURIComponent(activeSite.site)}`)
       .then((d) => setSeries(Array.isArray(d) ? d : []))
       .catch(() => setSeries([]));
   }, [activeSite]);

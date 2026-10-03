@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { API, levelClass, levelText } from "../lib/api.js";
+import { API, apiFetch, levelClass, levelText } from "../lib/api.js";
 
 /* ============================================================
    One Health page — three-pillar matrix + alert protocol
@@ -15,8 +15,7 @@ export default function OneHealthPage({ sites = [], onToast }) {
 
   useEffect(() => {
     if (!active?.latest_observation_id) return;
-    fetch(`${import.meta.env.VITE_API_URL || ""}/insights/${encodeURIComponent(active.latest_observation_id)}`)
-      .then((r) => (r.ok ? r.json() : null))
+    apiFetch(`/insights/${encodeURIComponent(active.latest_observation_id)}`)
       .then(setCard)
       .catch(() => setCard(null));
   }, [active]);

@@ -49,6 +49,7 @@ export default function App() {
     document.documentElement.getAttribute("data-theme") || "dark"
   );
   const [notice, setNotice]   = useState("");
+  const [loadError, setLoadError] = useState("");
   const [rerunning, setRerunning] = useState(false);
   const [toasts, setToasts]   = useState([]);
   const [captureOpen, setCaptureOpen] = useState(false);
@@ -70,11 +71,15 @@ export default function App() {
 
   const load = useCallback(async () => {
     try {
+      setLoadError("");
       const [s, sum, ins] = await Promise.all([API.sites(), API.summary(), API.insights()]);
       setSites(Array.isArray(s) ? s : []);
       setSummary(sum || null);
       setInsights(Array.isArray(ins) ? ins : []);
-    } catch (e) { console.warn(e); }
+    } catch (e) {
+      console.warn("OneHealth Lens API load failed", e);
+      setLoadError("Unable to load live dashboard data. Check the API connection and retry.");
+    }
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -115,6 +120,12 @@ export default function App() {
   return (
     <div className="selection:bg-teal-500/20 selection:text-teal-300">
       {/* ============ TOPBAR (exact from design) ============ */}
+      {loadError && (
+        <div role="alert" className="fixed top-20 right-4 z-[60] max-w-sm rounded-xl border border-rose-400/40 bg-rose-950/90 px-4 py-3 text-sm text-rose-100 shadow-xl">
+          {loadError}
+          <button type="button" className="ml-3 underline" onClick={load}>Retry</button>
+        </div>
+      )}
       <header className="sticky top-0 z-50 glass-panel border-b border-[var(--border-line)] px-4 lg:px-8 py-3.5 transition-colors">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
           {/* Brand & Kicker */}

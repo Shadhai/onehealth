@@ -21,6 +21,13 @@ export default defineConfig({
     screenshot: "only-on-failure",
     video: "retain-on-failure",
     viewport: { width: 1440, height: 900 },
+    storageState: {
+      cookies: [],
+      origins: [{
+        origin: "http://localhost:5173",
+        localStorage: [{ name: "ohl-impact-cards-guide-seen", value: "true" }],
+      }],
+    },
   },
 
   projects: [
