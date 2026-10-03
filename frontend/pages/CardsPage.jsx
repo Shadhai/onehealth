@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { API, levelClass, levelText, urgencyInfo } from "../lib/api.js";
+import { API, apiFetch, levelClass, levelText, urgencyInfo } from "../lib/api.js";
 import ListenButton from "../components/ListenButton.jsx";
 
 /* ============================================================
@@ -110,7 +110,7 @@ function Pillar({ column, mode }) {
           />
         )}
 
-        {column.reasons?.length > 0 && (
+        {mode === "detailed" && column.reasons?.length > 0 && (
           <div className="space-y-1.5">
             <p className="text-[10px] uppercase tracking-wider font-mono-code text-[var(--ink-dim)]">
               Diagnostic Triggers:
@@ -132,7 +132,7 @@ function Pillar({ column, mode }) {
           </div>
         )}
 
-        {column.actions?.length > 0 && (
+        {mode === "detailed" && column.actions?.length > 0 && (
           <div className="space-y-1.5 pt-1">
             <p className="text-[10px] uppercase tracking-wider font-mono-code text-[var(--ink-dim)]">
               Protocol Recommendations:
@@ -162,6 +162,7 @@ export default function CardsPage({ sites = [], onToast }) {
   const [card, setCard] = useState(null);
   const [flags, setFlags] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [viewMode, setViewMode] = useState("detailed");
   const [showGuide, setShowGuide] = useState(() => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("ohl-impact-cards-guide-seen") !== "true";
@@ -190,8 +191,8 @@ export default function CardsPage({ sites = [], onToast }) {
     setLoading(true);
     const id = activeSite.latest_observation_id;
     Promise.all([
-      fetch(`${import.meta.env.VITE_API_URL || ""}/insights/${encodeURIComponent(id)}`).then((r) => (r.ok ? r.json() : null)),
-      fetch(`${import.meta.env.VITE_API_URL || ""}/insights/${encodeURIComponent(id)}/flags`).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+      apiFetch(`/insights/${encodeURIComponent(id)}`),
+      apiFetch(`/insights/${encodeURIComponent(id)}/flags`).catch(() => null),
     ])
       .then(([c, f]) => { setCard(c); setFlags(f); })
       .catch(() => { setCard(null); setFlags(null); })
@@ -257,16 +258,45 @@ export default function CardsPage({ sites = [], onToast }) {
               ))}
             </select>
 
-            <div className="flex items-center p-1 rounded-2xl bg-black/20 text-xs font-mono-code">
-              <button className="flex-1 py-1.5 rounded-xl text-center text-[var(--ink-dim)] hover:text-[var(--ink)] transition-all flex items-center justify-center gap-1.5">
+            <div
+              className="flex items-center p-1 rounded-2xl bg-black/20 text-xs font-mono-code"
+              role="group"
+              aria-label="Impact card display mode"
+            >
+              <button
+                type="button"
+                onClick={() => setViewMode("simple")}
+                aria-pressed={viewMode === "simple"}
+                className={`flex-1 py-2 rounded-xl text-center transition-all flex items-center justify-center gap-1.5 ${
+                  viewMode === "simple"
+                    ? "bg-teal-500/20 text-teal-300 font-semibold shadow-sm"
+                    : "text-[var(--ink-dim)] hover:text-[var(--ink)] hover:bg-white/5"
+                }`}
+                title="Show a quick, field-friendly summary"
+              >
                 <span className="material-symbols-outlined text-sm">view_stream</span>
                 <span>Simple</span>
               </button>
-              <button className="flex-1 py-1.5 rounded-xl text-center bg-teal-500/20 text-teal-300 font-semibold transition-all flex items-center justify-center gap-1.5 shadow-sm">
+              <button
+                type="button"
+                onClick={() => setViewMode("detailed")}
+                aria-pressed={viewMode === "detailed"}
+                className={`flex-1 py-2 rounded-xl text-center transition-all flex items-center justify-center gap-1.5 ${
+                  viewMode === "detailed"
+                    ? "bg-teal-500/20 text-teal-300 font-semibold shadow-sm"
+                    : "text-[var(--ink-dim)] hover:text-[var(--ink)] hover:bg-white/5"
+                }`}
+                title="Show evidence, triggers, and recommended actions"
+              >
                 <span className="material-symbols-outlined text-sm">clinical_notes</span>
                 <span>Detailed</span>
               </button>
             </div>
+            <p className="text-[10px] text-[var(--ink-dim)] leading-relaxed" aria-live="polite">
+              {viewMode === "simple"
+                ? "Quick view: score, status, and plain-language summary."
+                : "Evidence view: diagnostic triggers and protocol recommendations."}
+            </p>
           </div>
 
           {/* Segment list */}
@@ -480,107 +510,7 @@ export default function CardsPage({ sites = [], onToast }) {
                   {["ecosystem", "animal", "human"].map((domain) => {
                     const col = card.columns.find((c) => c.domain === domain);
                     if (!col) return null;
-                    const cls = levelClass(col.level);
-                    const isHigh = cls === "red";
-                    const isMid = cls === "yellow";
-                    const borderCls = isHigh ? "border-l-rose-500" : isMid ? "border-l-amber-500" : "border-l-emerald-500";
-                    const iconName = domain === "ecosystem" ? "water_drop" : domain === "animal" ? "cruelty_free" : "medical_services";
-                    const iconBg = isHigh
-                      ? "bg-rose-500/20 text-rose-400"
-                      : isMid ? "bg-amber-500/20 text-amber-400" : "bg-emerald-500/20 text-emerald-400";
-                    const scoreColor = isHigh ? "text-rose-400" : isMid ? "text-amber-400" : "text-emerald-400";
-                    const barCls = isHigh ? "bg-rose-500" : isMid ? "bg-amber-400" : "bg-emerald-500";
-                    const pillarName = {
-                      ecosystem: "Ecosystem & Hydrology",
-                      animal: "Animal & Fauna",
-                      human: "Human Public Health",
-                    }[domain];
-                    const weight = { ecosystem: "50% composite", animal: "30% system weight", human: "20% system weight" }[domain];
-                    const roman = { ecosystem: "Pillar I", animal: "Pillar II", human: "Pillar III" }[domain];
-
-                    return <Pillar key={domain} column={col} mode="detailed" />;
-
-                    return (
-                      <div key={domain} className={`glass-panel rounded-3xl p-5 shadow-xl flex flex-col justify-between relative group hover:border-teal-400/40 transition-all border-l-4 ${borderCls}`}>
-                        <div className="space-y-4">
-                          <div className="flex items-start justify-between gap-3">
-                            <div>
-                              <div className="flex items-center gap-1.5">
-                                <span className={`material-symbols-outlined text-lg ${scoreColor}`}>{iconName}</span>
-                                <span className={`text-xs font-bold uppercase tracking-wider font-mono-code ${scoreColor}`}>
-                                  {roman}
-                                </span>
-                              </div>
-                              <h3 className="font-serif-title font-bold text-base text-[var(--ink)] mt-1">
-                                {pillarName}
-                              </h3>
-                              <span className="text-[10px] font-mono-code text-[var(--ink-dim)]">{weight}</span>
-                            </div>
-                            <div className="text-right">
-                              <span className={`text-xl font-mono-code font-bold ${scoreColor}`}>
-                                {Math.round((col.score || 0) * 100)}
-                              </span>
-                              <span className="text-[10px] text-[var(--ink-dim)]">/100</span>
-                              <div className={`text-[10px] font-semibold uppercase ${scoreColor}`}>
-                                {levelText(col.level)}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="h-2 rounded-full bg-black/30 overflow-hidden">
-                            <div className={`h-full ${barCls} rounded-full transition-all duration-700`}
-                              style={{ width: `${(col.score || 0) * 100}%` }} />
-                          </div>
-
-                          {col.summary && (
-                            <p className="text-xs text-[var(--ink)]/90 leading-relaxed bg-black/15 p-3 rounded-2xl">
-                              {col.summary}
-                            </p>
-                          )}
-
-                          {col.reasons?.length > 0 && (
-                            <div className="space-y-1.5">
-                              <p className="text-[10px] uppercase tracking-wider font-mono-code text-[var(--ink-dim)]">
-                                Diagnostic Triggers:
-                              </p>
-                              <ul className="text-xs space-y-1.5">
-                                {col.reasons.slice(0, 3).map((r, i) => (
-                                  <li key={i} className={`flex items-start gap-2 p-2 rounded-xl ${
-                                    isHigh ? "bg-rose-500/10 text-rose-200" : isMid ? "bg-amber-500/10 text-amber-200" : "bg-emerald-500/10 text-emerald-200"
-                                  }`}>
-                                    <span className={`material-symbols-outlined text-sm mt-0.5 ${scoreColor}`}>
-                                      {isHigh ? "crisis_alert" : isMid ? "warning" : "check_circle"}
-                                    </span>
-                                    <span>{r}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-
-                          {col.actions?.length > 0 && (
-                            <div className="space-y-1.5 pt-1">
-                              <p className="text-[10px] uppercase tracking-wider font-mono-code text-[var(--ink-dim)]">
-                                Protocol Recommendations:
-                              </p>
-                              <div className="space-y-1">
-                                {col.actions.slice(0, 3).map((a, i) => (
-                                  <div key={i} className="text-xs flex items-center gap-2 p-2 rounded-xl bg-teal-500/10 text-teal-300">
-                                    <span className="material-symbols-outlined text-teal-400 text-sm">bolt</span>
-                                    <span>{a}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="pt-4 mt-4 border-t border-[var(--border-line)] flex items-center justify-between text-[10px] font-mono-code text-[var(--ink-dim)]">
-                          <span>Source: OAH pipeline</span>
-                          <span className="text-teal-400">Live</span>
-                        </div>
-                      </div>
-                    );
+                    return <Pillar key={domain} column={col} mode={viewMode} />;
                   })}
                 </div>
               </div>
