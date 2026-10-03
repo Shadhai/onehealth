@@ -16,6 +16,8 @@ class RawObservation(BaseModel):
     longitude: Optional[float] = None
     latitude: Optional[float] = None
     submitted_at: Optional[datetime] = None
+    client_updated_at: Optional[datetime] = None
+    client_version: Optional[int] = None
     contextual_notes: Optional[str] = None
 
     # Channel assessment (verified codes: NAT, FAS, CL)
@@ -62,6 +64,8 @@ class RawObservation(BaseModel):
     # Media (verified from D6.1 and app documentation)
     photo_urls: Optional[List[str]] = None
     video_urls: Optional[List[str]] = None
+    photo_data_urls: Optional[List[str]] = None
+    video_data_urls: Optional[List[str]] = None
 
     # Source tracking
     source: str = "oah_app"                       # oah_app | csv | mock

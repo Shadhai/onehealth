@@ -126,10 +126,25 @@ then publishes them as <b>FHIR R4 bundles</b> and action-ready <b>impact cards</
 ## 🧠 Risk Model
 
 | Domain | Weight | Evidence examples |
+<<<<<<< HEAD
 |:---|:---:|:---|
 | 🌊 **Ecosystem & hydrology** | **50%** | pH, dissolved oxygen, TDS, conductivity, runoff, channel condition |
 | 🐟 **Animal & fauna health** | **30%** | Macroinvertebrates, diatoms, fish, amphibians, birds, diptera, ticks |
 | 🧑‍⚕️ **Human public health** | **20%** | Coliforms, pharmaceuticals, odour, exposure and contamination signals |
+=======
+| --- | ---: | --- |
+| Water quality stress | **30%** | pH, dissolved oxygen, TDS, conductivity, nutrients, and coliforms |
+| Biological health | **30%** | Macroinvertebrates, diatoms, fish, amphibians, and invasive organisms |
+| Human exposure | **20%** | Coliforms, pharmaceuticals, odour, appearance, and contamination signals |
+| Environmental pressure | **20%** | Rainfall runoff, channel modification, connectivity, erosion, and vegetation |
+
+The four-domain weights are configurable engineering defaults informed by the
+indicator fields and thresholds documented in the OneAquaHealth/FHIR mappings.
+They must be calibrated against field and laboratory reference data before the
+index is used for regulatory or clinical decisions. The frontend presents the
+results as three citizen-facing pillars: ecosystem (water quality plus
+environmental pressure), animal, and human health.
+>>>>>>> fbe4982 (fixes)
 
 Risk bands are identical across the API and UI:
 
@@ -144,6 +159,7 @@ Risk bands are identical across the API and UI:
 ## 🏗️ Architecture
 
 ```mermaid
+<<<<<<< HEAD
 graph TD
     Sources["🌐 Citizen Reports\nMock / API / CSV"] --> Ingest["1️⃣ Ingest"]
     Ingest --> Normalize["2️⃣ Normalize\nUnits + field mapping"]
@@ -158,11 +174,56 @@ graph TD
     API --> UI["🖥️ React + Vite\nDashboard / Cards / Map / Audit"]
     UI --> Actions["📤 CSV / FHIR preview\nPrint / copy / listen"]
     Store --> Distribute["9️⃣ Distribute\nCommunity cards + GIS"]
+=======
+flowchart LR
+   Sources["Citizen reports\nMock / API / CSV"] --> Ingest["1. Ingest"]
+   Ingest --> Normalize["2. Normalize\nUnits + field mapping"]
+   Normalize --> Validate["3. Validate\nRules + Isolation Forest"]
+   Validate --> Enrich["4. Enrich\nOpen-Meteo context"]
+   Enrich --> Correlate["5. Correlate\n30% Water / 30% Bio / 20% Human / 20% Environment"]
+   Correlate --> FHIR["6. FHIR Map\nR4 + OAH profiles"]
+   Correlate --> Insight["7. Insight\nExplainable cards"]
+   FHIR --> Store["8. Store\nSQLite or PostgreSQL"]
+   Insight --> Store
+   Store --> API["FastAPI\nSites / trends / flags / FHIR"]
+   API --> UI["React + Vite\nDashboard / Cards / Map / Audit"]
+   UI --> Actions["CSV / FHIR preview\nPrint / copy / listen"]
+   Store --> Distribute["9. Distribute\nCommunity cards + GIS"]
+>>>>>>> fbe4982 (fixes)
 ```
 
 ---
 
+<<<<<<< HEAD
 ## 🔄 Nine-Stage Pipeline
+=======
+1. A citizen report enters through the ingest route or a local fixture. The
+  original payload is retained so every later result can be traced back to its
+  source observation.
+2. The normalization stage maps source fields into the typed observation
+  schema and converts units such as Fahrenheit, oxygen saturation, g/L, and
+  mS/cm into analysis-ready values.
+3. Validation applies hard numeric bounds, cross-field consistency checks, and
+  one reusable anomaly model per research site. Each flag includes a rule ID,
+  severity, value, message, and explanation.
+4. Optional weather enrichment adds precipitation and temperature context. The
+  pipeline can disable network enrichment for deterministic tests and load
+  benchmarks.
+5. Correlation calculates the One Health Risk Index from water quality,
+  biological health, human exposure, and environmental pressure. The result
+  includes three citizen-facing pillar scores, causal links, confidence, risk
+  band, and recommended actions.
+6. The FHIR stage maps the observation and insight into a FHIR R4 collection
+  bundle with OAH profile metadata. The insight stage creates the frontend card
+  representation from the same typed result.
+7. Every stage is stored with its payload. SQLite is the default local adapter;
+  `DATABASE_URL` switches the application to the SQLAlchemy PostgreSQL adapter.
+8. FastAPI exposes the stored data to the React frontend. The UI adds search,
+  filtering, trends, a seven-day regression forecast, maps, audit views, and
+  FHIR/CSV actions without changing the underlying evidence.
+9. CI verifies the backend, frontend, FHIR structure, 500-record load test, and
+  browser workflows on every push or pull request.
+>>>>>>> fbe4982 (fixes)
 
 | # | Stage | What happens |
 |:---:|:---|:---|
@@ -178,10 +239,36 @@ graph TD
 
 > 💡 **Performance note:** the anomaly model is fitted once per site and reused across the batch.
 
+<<<<<<< HEAD
 ---
+=======
+- Dashboard with monitored-site KPIs, risk distribution, flags, search, filters,
+  and sortable segments.
+- Impact Cards with risk-sorted catchments, three-pillar evidence, causal links,
+  diagnostic triggers, protocol recommendations, FHIR preview, copy, print, and
+  listen controls.
+- First-visit Impact Cards onboarding guide with persistent dismissal and reopen
+  control.
+- Trends view with historical risk charts, pillar trajectories, confidence,
+  weekly activity, and a **7-day linear-regression risk forecast** with slope,
+  R-squared fit, and daily projections.
+- One Health matrix, spatial catchment map, audit trail, and overview narrative.
+- Animated Three.js low-poly octopus bio-indicator, lazy-loaded so the main
+  frontend bundle stays separate from the 3D renderer.
+- English, Portuguese, French, Italian, Dutch, and Norwegian UI dictionaries,
+  with matching speech-synthesis locale support.
+- Dark/light theme, responsive layout, keyboard-accessible controls, and
+  browser-native glossary explanations.
+- Installable PWA shell with service-worker caching for the application shell
+  and network-first reads of recently viewed API data. Offline observation
+  capture now stores field observations in IndexedDB (with a local-storage
+  fallback) and synchronizes them through `POST /ingest/observations` when
+  connectivity returns.
+>>>>>>> fbe4982 (fixes)
 
 ## ✨ Features
 
+<<<<<<< HEAD
 | Area | Capability | Detail |
 |:---|:---|:---|
 | 📊 **Dashboard** | Monitored-site KPIs | Risk distribution, flags, search, filters, sortable segments |
@@ -195,6 +282,42 @@ graph TD
 | 🏥 **Interoperability** | FHIR R4 / OAH | Collection bundles with profile metadata |
 | 🔌 **API** | FastAPI | Sites, summaries, insights, trends, flags, ingestion, CSV export, FHIR retrieval |
 | ☁️ **Deploy** | Vercel + Render | CORS configured for local dev and Vercel; backend via [`render.yaml`](render.yaml) |
+=======
+- FastAPI endpoints for sites, summaries, insights, trends, flags, ingestion,
+  CSV export, and FHIR retrieval.
+- Offline-capable field capture with queued pH, dissolved oxygen, temperature,
+  site, and overall-rating observations.
+- Optional media evidence captured as bounded data URLs (5 MB per file) and
+  preserved with the auditable raw observation payload.
+- FHIR R4 collection bundles with OAH profile metadata and linked resources.
+- Frontend Web Speech API narration for impact cards, with language-specific
+  voice selection when the browser provides a matching voice.
+- CORS configuration for local development and Vercel deployments.
+- Vercel frontend configuration and Render backend configuration via
+  [`render.yaml`](render.yaml). Current CI checks bundle structure and OAH
+  profile declarations. A local HL7 validator run found no fatal/error
+  findings, but could not resolve the external OAH profiles and CodeSystem;
+  authoritative OAH package validation remains a release-readiness task.
+
+### Production controls and validation
+
+- Set `INGESTION_API_KEY` to enable the authenticated `POST /ingest/live`
+  endpoint. It rejects missing/invalid keys and applies a per-key request
+  limit; the local offline queue uses the unauthenticated demo endpoint until
+  a deployed client-secret strategy is configured.
+- Duplicate submission IDs in one request are returned as `conflicts` rather
+  than being silently hidden. Existing IDs remain idempotent through the
+  pipeline's upsert behavior.
+- Run `python scripts/validate_fhir.py` with the local HL7 validator and the
+  official OAH package installed to check profile and terminology conformance.
+  Without that package, unresolved-profile warnings are not a conformance
+  result.
+- Run `python scripts/calibrate_model.py path/to/expert_labels.csv` only with
+  real expert/laboratory labels. Synthetic observations alone are not evidence
+  of scientific calibration.
+- Run `python scripts/postgres_load_test.py https://your-api.example` for a
+  concurrent health-check smoke test against a deployed PostgreSQL service.
+>>>>>>> fbe4982 (fixes)
 
 ---
 

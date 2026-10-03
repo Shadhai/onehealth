@@ -90,6 +90,36 @@ export default function OneHealthPage({ sites = [], onToast }) {
         </div>
       </section>
 
+      {/* Model explainer */}
+      <section className="glass-panel rounded-2xl p-5">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <p className="text-[10px] font-mono uppercase tracking-widest text-teal-400">Transparent scoring model</p>
+            <h2 className="text-lg font-bold text-[var(--ink)] font-serif-title mt-1">
+              Four evidence domains, three citizen-facing pillars
+            </h2>
+            <p className="text-xs text-[var(--ink-dim)] mt-1 max-w-2xl">
+              The ecosystem pillar combines water quality and environmental pressure.
+              The underlying weighted index remains visible so every alert can be audited.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 min-w-0">
+            {[
+              ["Water quality", "30%", "water_drop"],
+              ["Biological health", "30%", "cruelty_free"],
+              ["Human exposure", "20%", "medical_services"],
+              ["Environmental pressure", "20%", "landscape"],
+            ].map(([label, weight, icon]) => (
+              <div key={label} className="rounded-xl bg-black/15 border border-[var(--border-line)] px-3 py-2 min-w-[128px]">
+                <span className="material-symbols-outlined text-teal-300 text-base">{icon}</span>
+                <p className="text-[10px] text-[var(--ink-dim)] leading-tight mt-1">{label}</p>
+                <p className="text-sm font-bold font-mono text-[var(--ink)]">{weight}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Alert banner */}
       {active && (
         <section className={`rounded-2xl p-6 shadow-xl relative overflow-hidden backdrop-blur-md ${
@@ -219,7 +249,7 @@ export default function OneHealthPage({ sites = [], onToast }) {
               const badge = isHigh ? "bg-rose-500/20 text-rose-300" : isMid ? "bg-amber-500/20 text-amber-300" : "bg-emerald-500/20 text-emerald-300";
               const barFill = isHigh ? "bg-rose-500" : isMid ? "bg-amber-400" : "bg-emerald-500";
               const pillar = {
-                ecosystem: { num: "01", weight: "50% Weight", title: "Ecological & Hydrological Vitality", icon: "water_ec" },
+                ecosystem: { num: "01", weight: "50% composite", title: "Ecological & Hydrological Vitality", icon: "water_ec" },
                 animal: { num: "02", weight: "30% Weight", title: "Animal & Bio-Indicator Health", icon: "pest_control_rodent" },
                 human: { num: "03", weight: "20% Weight", title: "Human Public Health & Exposure", icon: "clinical_notes" },
               }[domain];

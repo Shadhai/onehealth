@@ -312,7 +312,7 @@ export default function DashboardPage({ sites: initialSites = [], onNavigate, on
             <span className="font-mono-code text-[10px] text-teal-400 uppercase">Scale 0.00 - 1.00</span>
           </div>
           <p className="text-xs text-[var(--ink-dim)] mb-4">
-            Current synthesized index based on 50% Eco, 30% Fauna, 20% Public Health.
+            Current synthesized index based on 30% Water, 30% Biology, 20% Human Exposure, and 20% Environmental Pressure.
           </p>
 
           <div className="space-y-2.5 font-mono-code text-xs">

@@ -23,9 +23,7 @@ if (!window.matchMedia) {
   });
 }
 
-if (!window.scrollTo) {
-  window.scrollTo = () => {};
-}
+window.scrollTo = () => {};
 
 const origError = console.error;
 console.error = (...args) => {

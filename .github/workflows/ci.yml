@@ -107,6 +107,10 @@ jobs:
           print(f'Bundle OK: {len(entries)} entries, {len(set(profiles))} OAH profiles')
           "
 
+      - name: Run local FHIR validator when available
+        run: python scripts/validate_fhir.py ci-fhir-bundle.json
+        continue-on-error: true
+
       - name: Upload FHIR bundle as artifact
         uses: actions/upload-artifact@v4
         with:

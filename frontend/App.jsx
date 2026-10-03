@@ -10,6 +10,8 @@ import OneHealth   from "./pages/OneHealthPage.jsx";
 import MapPage     from "./pages/MapPage.jsx";
 import Overview    from "./pages/OverviewPage.jsx";
 import AuditTrail  from "./pages/AuditTrail.jsx";
+import ConnectivityStatus from "./components/ConnectivityStatus.jsx";
+import ObservationCapture from "./components/ObservationCapture.jsx";
 
 const TABS = [
   { id: "overview",  key: "nav.overview" },
@@ -49,6 +51,7 @@ export default function App() {
   const [notice, setNotice]   = useState("");
   const [rerunning, setRerunning] = useState(false);
   const [toasts, setToasts]   = useState([]);
+  const [captureOpen, setCaptureOpen] = useState(false);
 
   const tr = useCallback((k, vars) => t(lang, k, vars), [lang]);
 
@@ -155,6 +158,14 @@ export default function App() {
 
           {/* Controls */}
           <div className="flex items-center gap-2.5">
+            <ConnectivityStatus />
+            <button
+              className="hidden sm:flex px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-semibold items-center gap-2 transition-all"
+              onClick={() => setCaptureOpen(true)}
+            >
+              <span className="material-symbols-outlined text-base">add_location_alt</span>
+              <span>{tr("capture.button")}</span>
+            </button>
             <div className="flex items-center p-1 rounded-xl bg-black/20 border border-[var(--border-line)] text-xs font-mono-code">
               {LANGUAGES.map((l) => (
                 <button
@@ -223,6 +234,12 @@ export default function App() {
       {view === "onehealth" && <OneHealth sites={sites} onToast={showToast} />}
       {view === "dashboard" && <Dashboard sites={sites} onNavigate={navigate} onToast={showToast} />}
       {view === "map"       && <MapPage   sites={sites} onNavigate={navigate} onToast={showToast} />}
+      {captureOpen && (
+        <ObservationCapture
+          onClose={() => setCaptureOpen(false)}
+          onComplete={() => { load(); showToast(tr("capture.synced")); }}
+        />
+      )}
 
       {/* ============ TOASTS ============ */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] flex flex-col gap-2 pointer-events-none">

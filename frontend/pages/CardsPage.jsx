@@ -68,7 +68,7 @@ function Pillar({ column, mode }) {
     animal: "Animal & Fauna",
     human: "Human Public Health",
   }[column.domain];
-  const weight = { ecosystem: "50% System Weight", animal: "30% System Weight", human: "20% System Weight" }[column.domain];
+  const weight = { ecosystem: "50% composite", animal: "30% system weight", human: "20% system weight" }[column.domain];
   const roman = { ecosystem: "Pillar I", animal: "Pillar II", human: "Pillar III" }[column.domain];
 
   return (
@@ -495,7 +495,7 @@ export default function CardsPage({ sites = [], onToast }) {
                       animal: "Animal & Fauna",
                       human: "Human Public Health",
                     }[domain];
-                    const weight = { ecosystem: "50% System Weight", animal: "30% System Weight", human: "20% System Weight" }[domain];
+                    const weight = { ecosystem: "50% composite", animal: "30% system weight", human: "20% system weight" }[domain];
                     const roman = { ecosystem: "Pillar I", animal: "Pillar II", human: "Pillar III" }[domain];
 
                     return <Pillar key={domain} column={col} mode="detailed" />;

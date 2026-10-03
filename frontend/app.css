@@ -2,6 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+.field-input {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-line);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--ink);
+  padding: 0.7rem 0.8rem;
+  outline: none;
+}
+
+.field-input:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 2px rgba(94, 234, 212, 0.15);
+}
+
+.btn-primary,
+.btn-outline {
+  border-radius: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: rgba(20, 184, 166, 0.2);
+  border: 1px solid rgba(45, 212, 191, 0.45);
+  color: #99f6e4;
+}
+
+.btn-outline {
+  border: 1px solid var(--border-line);
+  color: var(--ink-dim);
+}
+
 /* ============================================================
    OneHealth Lens — Design Tokens + Custom Classes
    Copied verbatim from the reference HTML <style> blocks.

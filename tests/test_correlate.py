@@ -4,7 +4,7 @@ from app.schemas.raw_observation import RawObservation
 from app.pipeline.stage2_normalize import normalize_batch, deduplicate
 from app.pipeline.stage3_validate import validate_batch
 from app.pipeline.stage4_enrich import enrich
-from app.pipeline.stage5_correlate import correlate
+from app.pipeline.stage5_correlate import correlate, WEIGHTS
 from app.schemas.enriched_observation import EnrichedObservation, WeatherContext
 from datetime import datetime
 import pytest
@@ -33,6 +33,16 @@ def validated():
 
 def get(validated, submission_id):
     return next(v for v in validated if v.submission_id == submission_id)
+
+
+def test_risk_weights_are_explicit_and_normalized():
+    assert WEIGHTS == {
+        "water_quality": 0.30,
+        "biological_health": 0.30,
+        "human_exposure": 0.20,
+        "environmental_pressure": 0.20,
+    }
+    assert sum(WEIGHTS.values()) == pytest.approx(1.0)
 
 
 def test_healthy_site_produces_low_risk(validated):

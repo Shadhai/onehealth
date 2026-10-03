@@ -99,3 +99,37 @@ def test_ingest_mock_reruns_pipeline(client):
     r2 = client.post("/ingest/mock")
     assert r2.status_code == 200
     assert r2.json()["insight_count"] == 15
+
+
+def test_ingest_field_observation(client):
+    payload = {
+        "submission_id": "FIELD-API-001",
+        "research_site": "Field Test Stream",
+        "ph": 7.2,
+        "dissolved_oxygen": 8.0,
+        "water_temperature": 14.0,
+        "source": "oah_app",
+    }
+    response = client.post("/ingest/observations", json=[payload])
+    assert response.status_code == 200
+    body = response.json()
+    assert body["ingested"] == 1
+    assert body["insights"] == 1
+    assert body["observation_ids"]
+    assert body["conflicts"] == []
+
+
+def test_live_ingestion_requires_configured_key(client, monkeypatch):
+    monkeypatch.delenv("INGESTION_API_KEY", raising=False)
+    response = client.post("/ingest/live", json=[{"submission_id": "LIVE-1"}])
+    assert response.status_code == 503
+
+
+def test_live_ingestion_rejects_invalid_key(client, monkeypatch):
+    monkeypatch.setenv("INGESTION_API_KEY", "secret")
+    response = client.post(
+        "/ingest/live",
+        headers={"X-API-Key": "wrong"},
+        json=[{"submission_id": "LIVE-2"}],
+    )
+    assert response.status_code == 401

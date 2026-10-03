@@ -600,7 +600,7 @@ export default function OverviewPage({ sites = [], summary = null, onNavigate, o
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             {[
-              { label: "PILLAR 01", weight: "50% Weight", title: "Ecological & Hydrological Vitality", sub1: "Physicochemical Quality", sub1w: "30%", sub2: "Environmental Runoff Pressure", sub2w: "20%", desc: "Tracks dissolved oxygen, pH buffer resilience, total dissolved solids, and Open-Meteo thermal shock and precipitation metrics." },
+              { label: "PILLAR 01", weight: "50% composite", title: "Ecological & Hydrological Vitality", sub1: "Physicochemical Quality", sub1w: "30%", sub2: "Environmental Runoff Pressure", sub2w: "20%", desc: "Tracks dissolved oxygen, pH buffer resilience, total dissolved solids, and Open-Meteo thermal shock and precipitation metrics." },
               { label: "PILLAR 02", weight: "30% Weight", title: "Animal & Bio-Indicator Health", sub1: "Benthic Biotic Integrity", sub1w: "20%", sub2: "Riparian Canopy Cover", sub2w: "10%", desc: "Quantifies sensitive macroinvertebrate diversity (Ephemeroptera / Plecoptera) and benthic diatom eutrophication indicators." },
               { label: "PILLAR 03", weight: "20% Weight", title: "Public Health & Human Contact", sub1: "Coliform & Enteric Pathogens", sub1w: "15%", sub2: "Odour & Sewage Proximity", sub2w: "5%", desc: "Translates microbial counts, recreational exposure vectors, and stagnation indicators into clinical FHIR-compatible action notices." },
             ].map((p) => (

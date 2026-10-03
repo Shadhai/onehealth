@@ -11,6 +11,7 @@ describe("API module", () => {
     expect(typeof API.flags).toBe("function");
     expect(typeof API.priority).toBe("function");
     expect(typeof API.rerun).toBe("function");
+    expect(typeof API.submitObservations).toBe("function");
   });
 
   it("builds the correct FHIR URL", () => {

@@ -17,6 +17,16 @@ export const API = {
   fhirUrl:  (id) => `${BASE}/fhir/${encodeURIComponent(id)}`,
   csvUrl:   (site) => `${BASE}/api/export/csv${site ? `?site=${encodeURIComponent(site)}` : ""}`,
   rerun:    () => fetch(`${BASE}/ingest/mock`, { method: "POST" }),
+  submitObservations: (observations) => json("/ingest/observations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(observations),
+  }),
+  submitLiveObservations: (observations, apiKey) => json("/ingest/live", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-API-Key": apiKey },
+    body: JSON.stringify(observations),
+  }),
 };
 
 export function levelClass(level) {
