@@ -511,8 +511,6 @@ GitHub Actions ([`ci.yml`](.github/workflows/ci.yml)) runs on every push and pul
 
 Playwright reports and traces go to the git-ignored `playwright-report/` and `test-results/` directories.
 
----
-
 ## 🛠️ Troubleshooting
 
 | Symptom | Likely Cause | Fix |
