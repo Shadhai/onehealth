@@ -6,12 +6,12 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f4c81,50:1a7abf,100:00d4ff&height=220&section=header&text=%F0%9F%92%A7%20OneHealth%20Lens&fontSize=52&fontColor=ffffff&fontAlignY=38&desc=Citizen%20water%20data%20%E2%86%92%20explainable%20One%20Health%20intelligence&descAlignY=60&descSize=18&animation=fadeIn" width="100%" />
 
 <a href="https://github.com/Shadhai/onehealth/actions/workflows/ci.yml"><img src="https://github.com/Shadhai/onehealth/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
-<img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge&logo=open-source-initiative&logoColor=white" alt="License" /> <!-- UPDATE: no LICENSE file in repo yet; add one that matches this badge -->
+<img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge&logo=open-source-initiative&logoColor=white" alt="License" />
 <img src="https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white" />
 <img src="https://img.shields.io/badge/FastAPI-API-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
 <img src="https://img.shields.io/badge/React-Vite-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
 <img src="https://img.shields.io/badge/FHIR-R4%20%2F%20OAH-E4572E?style=for-the-badge&logo=hl7&logoColor=white" />
-<img src="https://img.shields.io/badge/Tests-70%20backend%20%2B%2026%20frontend-brightgreen?style=for-the-badge&logo=pytest&logoColor=white" />
+<img src="https://img.shields.io/badge/Tests-76%20backend%20%2B%2028%20frontend-brightgreen?style=for-the-badge&logo=pytest&logoColor=white" />
 <img src="https://img.shields.io/github/stars/Shadhai/onehealth?style=for-the-badge&logo=github&color=yellow" />
 
 <h3>🚀 An open-source alternative to closed, single-domain water-quality dashboards</h3>
@@ -126,12 +126,6 @@ then publishes them as <b>FHIR R4 bundles</b> and action-ready <b>impact cards</
 ## 🧠 Risk Model
 
 | Domain | Weight | Evidence examples |
-<<<<<<< HEAD
-|:---|:---:|:---|
-| 🌊 **Ecosystem & hydrology** | **50%** | pH, dissolved oxygen, TDS, conductivity, runoff, channel condition |
-| 🐟 **Animal & fauna health** | **30%** | Macroinvertebrates, diatoms, fish, amphibians, birds, diptera, ticks |
-| 🧑‍⚕️ **Human public health** | **20%** | Coliforms, pharmaceuticals, odour, exposure and contamination signals |
-=======
 | --- | ---: | --- |
 | Water quality stress | **30%** | pH, dissolved oxygen, TDS, conductivity, nutrients, and coliforms |
 | Biological health | **30%** | Macroinvertebrates, diatoms, fish, amphibians, and invasive organisms |
@@ -144,7 +138,6 @@ They must be calibrated against field and laboratory reference data before the
 index is used for regulatory or clinical decisions. The frontend presents the
 results as three citizen-facing pillars: ecosystem (water quality plus
 environmental pressure), animal, and human health.
->>>>>>> fbe4982 (fixes)
 
 Risk bands are identical across the API and UI:
 
@@ -159,22 +152,6 @@ Risk bands are identical across the API and UI:
 ## 🏗️ Architecture
 
 ```mermaid
-<<<<<<< HEAD
-graph TD
-    Sources["🌐 Citizen Reports\nMock / API / CSV"] --> Ingest["1️⃣ Ingest"]
-    Ingest --> Normalize["2️⃣ Normalize\nUnits + field mapping"]
-    Normalize --> Validate["3️⃣ Validate\nRules + Isolation Forest"]
-    Validate --> Enrich["4️⃣ Enrich\nOpen-Meteo context"]
-    Enrich --> Correlate["5️⃣ Correlate\n50% Eco / 30% Fauna / 20% Human"]
-    Correlate --> FHIR["6️⃣ FHIR Map\nR4 + OAH profiles"]
-    Correlate --> Insight["7️⃣ Insight\nExplainable cards"]
-    FHIR --> Store[("🗄️ 8️⃣ Store\nSQLite or PostgreSQL")]
-    Insight --> Store
-    Store --> API["⚡ FastAPI\nSites / trends / flags / FHIR"]
-    API --> UI["🖥️ React + Vite\nDashboard / Cards / Map / Audit"]
-    UI --> Actions["📤 CSV / FHIR preview\nPrint / copy / listen"]
-    Store --> Distribute["9️⃣ Distribute\nCommunity cards + GIS"]
-=======
 flowchart LR
    Sources["Citizen reports\nMock / API / CSV"] --> Ingest["1. Ingest"]
    Ingest --> Normalize["2. Normalize\nUnits + field mapping"]
@@ -189,41 +166,11 @@ flowchart LR
    API --> UI["React + Vite\nDashboard / Cards / Map / Audit"]
    UI --> Actions["CSV / FHIR preview\nPrint / copy / listen"]
    Store --> Distribute["9. Distribute\nCommunity cards + GIS"]
->>>>>>> fbe4982 (fixes)
 ```
 
 ---
 
-<<<<<<< HEAD
 ## 🔄 Nine-Stage Pipeline
-=======
-1. A citizen report enters through the ingest route or a local fixture. The
-  original payload is retained so every later result can be traced back to its
-  source observation.
-2. The normalization stage maps source fields into the typed observation
-  schema and converts units such as Fahrenheit, oxygen saturation, g/L, and
-  mS/cm into analysis-ready values.
-3. Validation applies hard numeric bounds, cross-field consistency checks, and
-  one reusable anomaly model per research site. Each flag includes a rule ID,
-  severity, value, message, and explanation.
-4. Optional weather enrichment adds precipitation and temperature context. The
-  pipeline can disable network enrichment for deterministic tests and load
-  benchmarks.
-5. Correlation calculates the One Health Risk Index from water quality,
-  biological health, human exposure, and environmental pressure. The result
-  includes three citizen-facing pillar scores, causal links, confidence, risk
-  band, and recommended actions.
-6. The FHIR stage maps the observation and insight into a FHIR R4 collection
-  bundle with OAH profile metadata. The insight stage creates the frontend card
-  representation from the same typed result.
-7. Every stage is stored with its payload. SQLite is the default local adapter;
-  `DATABASE_URL` switches the application to the SQLAlchemy PostgreSQL adapter.
-8. FastAPI exposes the stored data to the React frontend. The UI adds search,
-  filtering, trends, a seven-day regression forecast, maps, audit views, and
-  FHIR/CSV actions without changing the underlying evidence.
-9. CI verifies the backend, frontend, FHIR structure, 500-record load test, and
-  browser workflows on every push or pull request.
->>>>>>> fbe4982 (fixes)
 
 | # | Stage | What happens |
 |:---:|:---|:---|
@@ -239,60 +186,25 @@ flowchart LR
 
 > 💡 **Performance note:** the anomaly model is fitted once per site and reused across the batch.
 
-<<<<<<< HEAD
 ---
-=======
-- Dashboard with monitored-site KPIs, risk distribution, flags, search, filters,
-  and sortable segments.
-- Impact Cards with risk-sorted catchments, three-pillar evidence, causal links,
-  diagnostic triggers, protocol recommendations, FHIR preview, copy, print, and
-  listen controls.
-- First-visit Impact Cards onboarding guide with persistent dismissal and reopen
-  control.
-- Trends view with historical risk charts, pillar trajectories, confidence,
-  weekly activity, and a **7-day linear-regression risk forecast** with slope,
-  R-squared fit, and daily projections.
-- One Health matrix, spatial catchment map, audit trail, and overview narrative.
-- Animated Three.js low-poly octopus bio-indicator, lazy-loaded so the main
-  frontend bundle stays separate from the 3D renderer.
-- English, Portuguese, French, Italian, Dutch, and Norwegian UI dictionaries,
-  with matching speech-synthesis locale support.
-- Dark/light theme, responsive layout, keyboard-accessible controls, and
-  browser-native glossary explanations.
-- Installable PWA shell with service-worker caching for the application shell
-  and network-first reads of recently viewed API data. Offline observation
-  capture now stores field observations in IndexedDB (with a local-storage
-  fallback) and synchronizes them through `POST /ingest/observations` when
-  connectivity returns.
->>>>>>> fbe4982 (fixes)
 
 ## ✨ Features
 
-<<<<<<< HEAD
-| Area | Capability | Detail |
-|:---|:---|:---|
-| 📊 **Dashboard** | Monitored-site KPIs | Risk distribution, flags, search, filters, sortable segments |
-| 🪪 **Impact Cards** | Risk-sorted catchments | Three-pillar evidence, causal links, triggers, protocol recommendations, FHIR preview, copy, print, listen |
-| 🎓 **Onboarding** | First-visit guide | Persistent dismissal with a reopen control |
-| 📈 **Trends** | History + forecast | Risk charts, pillar trajectories, confidence, weekly activity, **7-day linear-regression forecast** (slope, R², daily projections) |
-| 🗺️ **Spatial & audit** | One Health matrix, catchment map, audit trail | Overview narrative included |
-| 🐙 **3D bio-indicator** | Low-poly Three.js octopus | Lazy-loaded, so the main bundle stays small |
-| 🌍 **Localization** | 6 UI languages | English, Portuguese, French, Italian, Dutch, Norwegian, with matching speech-synthesis locales |
-| ♿ **UX** | Theme + accessibility | Dark/light, responsive, keyboard-accessible, glossary explanations |
-| 🏥 **Interoperability** | FHIR R4 / OAH | Collection bundles with profile metadata |
-| 🔌 **API** | FastAPI | Sites, summaries, insights, trends, flags, ingestion, CSV export, FHIR retrieval |
-| ☁️ **Deploy** | Vercel + Render | CORS configured for local dev and Vercel; backend via [`render.yaml`](render.yaml) |
-=======
 - FastAPI endpoints for sites, summaries, insights, trends, flags, ingestion,
   CSV export, and FHIR retrieval.
 - Offline-capable field capture with queued pH, dissolved oxygen, temperature,
   site, and overall-rating observations.
+- Workbox Background Sync retries failed observation submissions when the
+  service worker is available, while the open app retries on reconnect.
 - Optional media evidence captured as bounded data URLs (5 MB per file) and
   preserved with the auditable raw observation payload.
 - FHIR R4 collection bundles with OAH profile metadata and linked resources.
 - Frontend Web Speech API narration for impact cards, with language-specific
   voice selection when the browser provides a matching voice.
 - CORS configuration for local development and Vercel deployments.
+- Configurable request-size protection, coordinate/pH range validation,
+  database readiness probing, and authenticated live ingestion with rate
+  limiting.
 - Vercel frontend configuration and Render backend configuration via
   [`render.yaml`](render.yaml). Current CI checks bundle structure and OAH
   profile declarations. A local HL7 validator run found no fatal/error
@@ -320,7 +232,6 @@ flowchart LR
   of scientific calibration.
 - Run `python scripts/postgres_load_test.py https://your-api.example` for a
   concurrent health-check smoke test against a deployed PostgreSQL service.
->>>>>>> fbe4982 (fixes)
 
 ---
 
@@ -332,7 +243,7 @@ flowchart LR
 | **API** | FastAPI + Uvicorn |
 | **Frontend** | React + Vite, Three.js (lazy-loaded) |
 | **Database** | SQLite (default) / PostgreSQL via SQLAlchemy |
-| **Validation** | Pydantic schemas + scikit-learn Isolation Forest <!-- VERIFY: scikit-learn --> |
+| **Validation** | Pydantic schemas + scikit-learn Isolation Forest |
 | **Interoperability** | FHIR R4, OneAquaHealth (OAH) profile |
 | **External data** | Open-Meteo (optional) |
 | **Testing** | pytest, Vitest, Playwright |
@@ -376,8 +287,6 @@ npm install
 Copy-Item .env.example .env   # then edit values
 ```
 
-<!-- UPDATE: add .env.example to the repo, or remove the copy line -->
-
 ### Step 3 — Run
 
 ```bash
@@ -407,18 +316,21 @@ Build production assets with `npm run build` (root is `frontend/`, output in `fr
 DATABASE_URL=postgresql+psycopg://USER:PASSWORD@HOST:5432/DATABASE
 
 # ── Server ──────────────────────────────────────────────
-# ADD: any PORT / CORS origin variables your app reads
+CORS_ORIGINS=http://localhost:5173,http://localhost:4173
+MAX_REQUEST_BYTES=15728640
+INGESTION_API_KEY=replace-with-a-long-random-secret
 ```
 
 | Variable | Required | Purpose |
 |:---|:---:|:---|
 | `DATABASE_URL` | ❌ | Activates the SQLAlchemy PostgreSQL adapter; SQLite is used when unset |
+| `INGESTION_API_KEY` | ❌ | Enables authenticated `POST /ingest/live`; use a long secret in production |
+| `CORS_ORIGINS` | ❌ | Comma-separated production frontend origin allowlist |
+| `MAX_REQUEST_BYTES` | ❌ | Maximum request body size; defaults to 15 MiB |
 
 ---
 
 ## 📖 API Reference
-
-<!-- UPDATE endpoints: paths below are inferred from the capabilities list; confirm against app/api/routes/ or /docs -->
 
 ### 🌐 Sites & Summaries
 
@@ -439,7 +351,9 @@ DATABASE_URL=postgresql+psycopg://USER:PASSWORD@HOST:5432/DATABASE
 
 | Method | Endpoint | Description |
 |:---:|:---|:---|
-| `POST` | `/ingest` | Submit a citizen observation to the pipeline |
+| `POST` | `/ingest/observations` | Submit online/offline field observations |
+| `POST` | `/ingest/live` | Submit authenticated live observations with `X-API-Key` |
+| `POST` | `/ingest/mock` | Run bundled demo data through the pipeline |
 | `GET` | `/api/export.csv` | CSV export |
 
 ### 🏥 FHIR & Health
@@ -448,6 +362,7 @@ DATABASE_URL=postgresql+psycopg://USER:PASSWORD@HOST:5432/DATABASE
 |:---:|:---|:---|
 | `GET` | `/fhir/...` | Retrieve FHIR R4 collection bundles (OAH profile) |
 | `GET` | `/health` | Liveness check |
+| `GET` | `/ready` | Database readiness probe |
 
 > 📘 FastAPI serves interactive docs at `http://localhost:8000/docs` while the API is running.
 
@@ -502,21 +417,34 @@ Because the API exposes stored data, cards and FHIR bundles independently, GIS p
 ```text
 onehealth/
 ├── 📁 app/
-│   ├── 📁 api/routes/        # FastAPI endpoints
-│   ├── 📁 pipeline/          # Nine processing stages
-│   ├── 📁 schemas/           # Pydantic observation + insight contracts
+│   ├── 📁 api/routes/        # Data, insights, ingestion and FHIR endpoints
+│   ├── 📁 pipeline/          # Nine processing stages and orchestrator
+│   ├── 📁 schemas/           # Pydantic observation and insight contracts
+│   ├── 📄 config.py          # Environment-based runtime configuration
 │   ├── 📄 db.py              # SQLite store (default)
-│   └── 📄 db_sqlalchemy.py   # SQLAlchemy / PostgreSQL adapter
+│   ├── 📄 db_sqlalchemy.py   # SQLAlchemy / PostgreSQL adapter
+│   └── 📄 main.py            # FastAPI app, middleware and readiness probes
 ├── 📁 frontend/
 │   ├── 📁 pages/             # Dashboard, cards, trends, map, audit, One Health
-│   ├── 📁 components/        # Shared controls + 3D bio-indicator
-│   └── 📁 lib/               # API, i18n, language context, forecast logic
-├── 📁 scripts/               # Synthetic data, load test, persistence demo
-├── 📁 tests/                 # Backend + adapter tests
+│   ├── 📁 components/        # Bio-indicator, field capture, connectivity, speech
+│   ├── 📁 lib/               # API, i18n, forecast and offline queue
+│   ├── 📁 test/              # Vitest and React component tests
+│   ├── 📄 App.jsx            # Application shell and navigation
+│   └── 📄 main.jsx           # React entry point and PWA registration
+├── 📁 scripts/               # Demo, synthetic data, validation and load tools
+│   ├── 📄 calibrate_model.py # Expert/laboratory reference calibration
+│   ├── 📄 validate_fhir.py   # Local HL7/OAH validator wrapper
+│   └── 📄 postgres_load_test.py # Concurrent deployed-service smoke test
+├── 📁 tests/                 # Backend, API, pipeline and adapter tests
 ├── 📁 e2e/                   # Playwright browser workflows
-├── 📁 docs/                  # Load-test report, migration guide
-├── 📄 render.yaml            # Render backend config
-└── 📁 .github/workflows/     # ci.yml
+├── 📁 docs/                  # Load report and PostgreSQL migration guide
+├── 📁 data/                  # Bundled mock observations and fixtures
+├── 📁 .github/workflows/     # CI gates for backend, frontend, FHIR, load and E2E
+├── 📄 vite.config.js         # Vite, proxy and PWA/Background Sync configuration
+├── 📄 render.yaml            # Render backend deployment configuration
+├── 📄 vercel.json            # Vercel frontend deployment configuration
+├── 📄 .env.example           # Database, CORS, payload and ingestion settings
+└── 📄 PROJECT_RATING_AND_IMPROVEMENTS.txt # Evidence-based submission assessment
 ```
 
 ---
@@ -526,8 +454,6 @@ onehealth/
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Shadhai/onehealth)
 
 Backend deploys to Render via [`render.yaml`](render.yaml); the frontend ships to Vercel.
-
-<!-- UPDATE: no Dockerfile detected. The stub below is a starting point; verify before relying on it. -->
 
 ```dockerfile
 # Dockerfile (API) — proposed
@@ -567,8 +493,8 @@ Schema creation, data-copy guidance, staged cutover and rollback: [`docs/postgre
 
 | Suite | Command | Current result |
 |:---|:---|:---:|
-| Backend (pytest) | `python -m pytest -q` | ✅ **70 passed** |
-| Frontend (Vitest) | `npm test -- --run` | ✅ **26 passed** |
+| Backend (pytest) | `python -m pytest -q` | ✅ **76 passed** |
+| Frontend (Vitest) | `npm test -- --run` | ✅ **28 passed** |
 | Browser E2E (Playwright) | `npx playwright install chromium && npm run test:e2e` | ✅ shell, dashboard, cards, navigation |
 | Adapter | `python -m pytest tests/test_db_sqlalchemy.py -q` | ✅ |
 | Load test | `python scripts/load_test.py` | ✅ 0 errors |
@@ -609,10 +535,13 @@ Playwright reports and traces go to the git-ignored `playwright-report/` and `te
 - [x] Explainable impact cards and 7-day regression forecast
 - [x] PostgreSQL adapter with migration guide
 - [x] CI with load-test gate and Playwright E2E
+- [x] Offline PWA capture, media evidence, and Background Sync
+- [x] Authenticated live ingestion, rate limiting, request limits, and readiness probe
+- [x] Configurable CORS and measurement-range validation
 - [ ] 🚧 Add an open-source `LICENSE`
 - [ ] 🚧 Publish a live hosted demo
 - [ ] 🚧 Dockerfile and docker-compose for one-command setup
-- [ ] 🚧 Authentication and role-based access for ingestion
+- [ ] 🚧 Production role/site authorization and distributed rate limiting
 - [ ] 🚧 Coverage reporting badge
 
 ---
@@ -664,7 +593,7 @@ Add these to the repo root so AI agents and LLM crawlers understand the project.
 
 ```text
 # OneHealth Lens
-> Turns citizen water observations into explainable One Health risk scores (ecosystem 50%, fauna 30%, human 20%) and publishes FHIR R4/OAH bundles and impact cards.
+> Turns citizen water observations into explainable One Health risk scores across water quality (30%), biological health (30%), human exposure (20%), and environmental pressure (20%), then publishes FHIR R4/OAH bundles and impact cards.
 
 ## Docs
 - README.md: overview, quick start, API, testing
@@ -688,7 +617,7 @@ Add these to the repo root so AI agents and LLM crawlers understand the project.
 ## Test (run before every PR)
 - `python -m pytest -q` and `npm test -- --run`; E2E: `npm run test:e2e`
 ## Conventions
-- Keep the 50/30/20 risk weights and risk bands consistent across API and UI.
+- Keep the 30/30/20/20 domain weights and risk bands consistent across API and UI.
 - Pydantic schemas in app/schemas/ are the contract; never bypass them.
 - DB writes commit once per stage, not per row.
 - Disable weather enrichment in tests for determinism.
@@ -700,17 +629,24 @@ Add these to the repo root so AI agents and LLM crawlers understand the project.
 
 <!-- Keep a Changelog format: https://keepachangelog.com -->
 
-See [`CHANGELOG.md`](CHANGELOG.md) *(to be added)*.
+See the repository history for the complete change history.
 
 ## [Unreleased]
 ### Added
 - Nine-stage One Health pipeline, FHIR R4/OAH mapping, impact cards, forecast, PostgreSQL adapter.
+- Offline PWA field capture with IndexedDB fallback, bounded media evidence,
+  reconnect retry, and Workbox Background Sync.
+- Authenticated live ingestion, API-key throttling, conflict reporting,
+  payload-size limits, strict measurement ranges, configurable CORS, and
+  `/ready` database readiness checks.
+- Reproducible FHIR validation, scientific calibration, and PostgreSQL smoke
+  test scripts.
+- Current verified test baseline: 76 backend tests and 28 frontend tests.
 
 ---
 
 ## 📄 License
 
-<!-- UPDATE: no license file currently exists. Add LICENSE (MIT shown in badge) or change the badge. -->
 Distributed under the MIT License once a `LICENSE` file is added. See [`LICENSE`](LICENSE).
 
 ---
