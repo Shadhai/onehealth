@@ -1,5 +1,6 @@
 # tests/test_store.py
 import json
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 import pytest
 
@@ -130,3 +131,19 @@ async def test_full_pipeline_persists_everything(store):
     assert store.count("enriched_observations") == n
     assert store.count("one_health_insights") == n
     assert store.count("fhir_bundles") == n
+
+
+@pytest.mark.asyncio
+async def test_get_all_sites_summary_is_safe_with_concurrent_reads(store):
+    raw = load_raw()
+    await run_pipeline(raw, store, enrich_weather=False)
+
+    def read_summary():
+        sites = store.get_all_sites_summary()
+        assert len(sites) >= 1
+        assert all("site" in site for site in sites)
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        futures = [pool.submit(read_summary) for _ in range(20)]
+        for future in futures:
+            future.result()
