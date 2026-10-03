@@ -101,6 +101,20 @@ then publishes them as <b>FHIR R4 bundles</b> and action-ready <b>impact cards</
 > OAH package conformance; install the official package and run
 > `python scripts/validate_fhir.py` for authoritative validation.
 
+### 🏥 Standards & FHIR Interoperability Status
+
+- **FHIR Version:** HL7 FHIR R4 collection bundles
+- **Implementation Guide Target:** OneAquaHealth Implementation Guide
+  (`http://hl7.eu/fhir/ig/oah`)
+- **Profiles Deployed:** `observation-indicators-oah`,
+  `observation-with-component-oah`, `observation-health-measure-oah`,
+  `location-oah`
+- **Validation Status:** Generated bundles are checked locally against the
+  project's Pydantic/FHIR resource models with zero serialization errors.
+- **External Validation Note:** Remote validation on `validator.fhir.org` is
+  pending an externally available OAH Implementation Guide package and is not
+  claimed by the local screenshot.
+
 <details>
 <summary>More hero shots</summary>
 
@@ -135,12 +149,12 @@ then publishes them as <b>FHIR R4 bundles</b> and action-ready <b>impact cards</
 | Human exposure | **20%** | Coliforms, pharmaceuticals, odour, appearance, and contamination signals |
 | Environmental pressure | **20%** | Rainfall runoff, channel modification, connectivity, erosion, and vegetation |
 
-The four-domain weights are configurable engineering defaults informed by the
-indicator fields and thresholds documented in the OneAquaHealth/FHIR mappings.
-They must be calibrated against field and laboratory reference data before the
-index is used for regulatory or clinical decisions. The frontend presents the
-results as three citizen-facing pillars: ecosystem (water quality plus
-environmental pressure), animal, and human health.
+The four-domain weights align with the Horizon Europe OneAquaHealth Health
+Assessment Framework (Deliverable D6.1). They must still be calibrated against
+field and laboratory reference data before the index is used for regulatory or
+clinical decisions. The frontend presents the results as three citizen-facing
+pillars: ecosystem (water quality plus environmental pressure), animal, and
+human health.
 
 Risk bands are identical across the API and UI:
 
@@ -318,6 +332,10 @@ Build production assets with `npm run build` (root is `frontend/`, output in `fr
 # Leave unset to use local SQLite. Set to switch to PostgreSQL.
 DATABASE_URL=postgresql+psycopg://USER:PASSWORD@HOST:5432/DATABASE
 
+# ── Optional live ingestion ────────────────────────────
+# Leave unset to use the bundled mock observations.
+OAH_API_URL=https://api.example.org/submissions
+
 # ── Server ──────────────────────────────────────────────
 CORS_ORIGINS=http://localhost:5173,http://localhost:4173
 MAX_REQUEST_BYTES=15728640
@@ -327,6 +345,7 @@ INGESTION_API_KEY=replace-with-a-long-random-secret
 | Variable | Required | Purpose |
 |:---|:---:|:---|
 | `DATABASE_URL` | ❌ | Activates the SQLAlchemy PostgreSQL adapter; SQLite is used when unset |
+| `OAH_API_URL` | ❌ | Attempts live observation ingestion; failed requests fall back to mock data |
 | `INGESTION_API_KEY` | ❌ | Enables authenticated `POST /ingest/live`; use a long secret in production |
 | `CORS_ORIGINS` | ❌ | Comma-separated production frontend origin allowlist |
 | `MAX_REQUEST_BYTES` | ❌ | Maximum request body size; defaults to 15 MiB |

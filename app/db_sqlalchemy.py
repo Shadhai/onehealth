@@ -28,6 +28,8 @@ class SQLAlchemyStore:
     """
 
     def __init__(self, database_url: str = "sqlite:///:memory:", engine: Optional[Engine] = None):
+        if database_url.startswith("postgres://"):
+            database_url = database_url.replace("postgres://", "postgresql://", 1)
         self.database_url = database_url
         self.engine = engine or create_engine(database_url, future=True)
         self.session_factory = sessionmaker(bind=self.engine, autoflush=False, expire_on_commit=False)

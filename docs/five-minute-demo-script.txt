@@ -1,156 +1,197 @@
-ONEHEALTH LENS - FIVE-MINUTE TOP-TIER DEMO SCRIPT
-==================================================
+ONEHEALTH LENS - FIVE-MINUTE WINNING DEMO SCRIPT
+================================================
 
-Target delivery: 4:45-5:00 at a confident 130-145 spoken words per minute.
-Bracketed text is a presenter action and is not spoken.
+Purpose
+-------
+This is a competition-ready script, not a product tour. Tell one complete
+story: a community observation becomes a trusted, explainable intervention.
+The spoken script is approximately 700 words (about five minutes at 140 wpm).
+Bracketed instructions are presenter actions and are not spoken.
 
-
-00:00-00:25 | OPEN
--------------------
-[Start on Overview with seeded data visible.]
-
-"Water data is collected everywhere, but it is rarely converted into a
-decision people can trust. OneHealth Lens closes that gap.
-
-It turns a citizen observation into an explainable, auditable One Health
-decision. In one workflow we connect water quality, biological health, human
-exposure, and environmental pressure - then return the result as an action
-card and an interoperable FHIR record."
+Demo principle
+--------------
+Never narrate what the audience can already read. Point to the proof, explain
+why it matters, and move the story forward. Use one high-risk site consistently
+throughout the demo.
 
 
-00:25-00:55 | OVERVIEW
-----------------------
-[Point to the hero, matrix call-to-action, monitored segments, and narrative.]
+00:00-00:25 | THE HOOK: FROM SIGNAL TO DECISION
+------------------------------------------------
+[Start on Overview with seeded data loaded. Pause for one second before
+speaking.]
 
-"Overview is designed for a mixed audience. It answers: where are we
-monitoring, what is changing, and why does it matter for health?
+"A stream can look normal while its water, biodiversity, and human exposure
+risks are moving in the wrong direction. The problem is not a lack of data.
+The problem is the gap between an observation and a decision.
 
-The interface starts with plain language, but every summary remains connected
-to the underlying observation. A community member can understand the story;
-a scientist or manager can continue into the evidence."
+OneHealth Lens closes that gap. It turns a community water observation into
+an explainable, auditable One Health action - connecting ecosystem condition,
+animal health, and human health in one workflow."
 
-
-00:55-01:35 | DASHBOARD
-----------------------
-[Click Dashboard. Show KPI cards, risk distribution, search, then search for
-Segment 4 and click a row.]
-
-"The Dashboard is the operational view. KPIs show monitored sites and risk
-distribution. Priority cards surface where attention is needed first.
-
-The table is searchable, sortable, and filterable by risk and validation
-flags. I can search for Segment 4, compare its status, and open the exact
-impact card from the row.
-
-This reduces the journey from 'something may be wrong' to 'this is the site,
-this is the evidence, and this is the next action.'"
+Judge signal: Mission impact, problem clarity, memorable positioning.
 
 
-01:35-02:20 | IMPACT CARDS
---------------------------
-[Click Impact Cards, select a segment, then click Detailed.]
+00:25-00:50 | OVERVIEW: ONE SHARED PICTURE
+-------------------------------------------
+[Point to the hero, monitored segments, and One Health matrix.]
 
-"This is the explanation layer. The Impact Card shows the One Health Risk
-Index, risk band, confidence, causal links, diagnostic triggers, and
-recommended actions - not just a black-box label.
+"The Overview gives every stakeholder the same starting point. A volunteer
+sees plain-language context. A scientist sees the monitored catchment. A
+municipal team sees where attention may be needed.
 
-The transparent model uses four domains: 30 percent water quality, 30 percent
-biological health, 20 percent human exposure, and 20 percent environmental
-pressure. The UI summarizes these as ecosystem, animal, and human pillars so
-the result stays understandable.
-
-Detailed mode exposes the reasons behind the score. Speech playback supports
-hands-free field use, and FHIR preview connects the insight to health-system
-interoperability."
+The important design choice is traceability: every headline can lead back to
+the observation and the evidence behind it. This is not a static dashboard;
+it is a shared picture of catchment health."
 
 
-02:20-02:55 | TRENDS
---------------------
-[Click Trends. Point to forecast, risk history, confidence, and frequency.]
+00:50-01:25 | DASHBOARD: PRIORITISE THE NEXT ACTION
+----------------------------------------------------
+[Open Dashboard. Show KPIs, risk distribution, search/filter, and select the
+same high-risk site.]
 
-"A single observation can be noisy. Trends show whether a catchment is stable,
-improving, or deteriorating.
+"Now I move from context to operations. The Dashboard shows monitored sites,
+risk distribution, validation status, and the highest-priority segments.
 
-The page combines citizen timestamps with optional weather context, shows a
-seven-day forecast baseline, and displays confidence and submission frequency.
-That is responsible analytics: the system shows both the signal and how much
-evidence supports it, so teams know when more sampling is needed."
+I can search and filter instead of scanning a spreadsheet. I select this
+high-risk site and move directly to its evidence. The operational question is
+simple: not 'what data do we have?' but 'which site deserves attention first,
+and why?'"
 
-
-02:55-03:25 | ONE HEALTH
-------------------------
-[Click One Health. Point to the matrix, alert state, recovery/action sections.]
-
-"One Health makes the connection explicit. Water degradation can affect
-habitat and biodiversity, while changing exposure pathways for people.
-
-This page synthesizes human, animal, and ecosystem evidence into one
-structured explanation with alert protocols, recovery windows, and export
-actions. It does not replace experts; it gives communities and experts the
-same traceable starting point."
+Judge signal: Usability, practical municipal value, decision speed.
 
 
-03:25-03:55 | MAP
-----------------
-[Click Map. Show markers and legend; select a site if tiles are available.]
+01:25-02:15 | IMPACT CARDS: EXPLAIN THE SCORE
+----------------------------------------------
+[Open Impact Cards. Select the same site. Show Detailed, then briefly switch
+to Simple and back to Detailed.]
 
-"Risk is spatial, so the Map places monitored sites in their catchment
-context. Marker colors use the same risk index as the dashboard and cards.
+"This is the product's explanation layer. The Impact Card shows the risk
+index, risk band, confidence, causal chain, diagnostic triggers, and
+recommended protocol. It does not ask the user to trust an unexplained
+number.
 
-That supports a practical municipal workflow: identify a cluster, select a
-site, inspect the evidence, and decide whether the next step is sampling,
-cleanup, habitat work, or public-health follow-up."
+The score combines four evidence domains: water quality at 30 percent,
+biological health at 30 percent, human exposure at 20 percent, and
+environmental pressure at 20 percent. The interface presents that model as
+ecosystem, animal, and human pillars so it remains understandable outside a
+data science team.
 
+For a quick field briefing, Simple mode shows the status and plain-language
+summary. For scientific or municipal review, Detailed mode reveals the
+triggers and actions. The same result serves both audiences.
 
-03:55-04:25 | FIELD CAPTURE
----------------------------
-[Click Field capture in the header. Show measurements and media fields.]
+Speech playback supports hands-free access, and the FHIR preview shows how an
+insight can move toward health-system interoperability."
 
-"The workflow also works where the data is collected. A volunteer can record
-site, pH, dissolved oxygen, temperature, rating, and optional photo or video
-evidence.
-
-When connectivity is poor, the observation is stored locally in IndexedDB
-with a fallback, then retried when the connection returns. The PWA registers
-Background Sync for failed submissions, and the header makes connectivity
-visible. This prevents a field submission from becoming a data black hole."
-
-
-04:25-04:50 | AUDIT TRAIL
---------------------------
-[Click Audit Trail and expand one or two stages.]
-
-"The Audit Trail is the trust layer. It exposes the nine stages: ingest,
-normalize, validate, enrich, correlate, FHIR mapping, insight rendering,
-storage, and distribution.
-
-I can move backwards from a risk card to its validation flags, enrichment
-context, original payload, and FHIR representation. That makes the result
-reviewable, reproducible, and institution-ready."
+Judge signal: Innovation, explainable AI, accessibility, technical depth.
 
 
-04:50-05:00 | CLOSE
--------------------
-[Return to Overview or the strongest high-risk Impact Card.]
+02:15-02:45 | TRENDS: DISTINGUISH SIGNAL FROM NOISE
+---------------------------------------------------
+[Open Trends. Point to historical risk, forecast, confidence, and submission
+frequency.]
 
-"OneHealth Lens is more than a water dashboard. It is a translation layer
-from community observation to explainable, auditable, and actionable health
-intelligence - accessible to volunteers, useful to scientists, and practical
-for catchment managers.
+"A single reading should not dictate a policy decision. Trends add context:
+is this catchment stable, improving, or deteriorating?
 
-The next validation step is clear: official OAH package validation, real
-field and laboratory calibration, and measured PostgreSQL deployment
-performance. The product is built so those claims can be tested, not guessed."
+Here the historical trajectory, forecast baseline, confidence, and citizen
+submission frequency appear together. The system shows not only a signal, but
+how much evidence supports that signal. That encourages better sampling and
+more responsible intervention."
+
+
+02:45-03:15 | ONE HEALTH: CONNECT THE DOMAINS
+----------------------------------------------
+[Open One Health. Point to the matrix, alert protocol, and action/recovery
+sections.]
+
+"One Health makes the connection visible. Water degradation can reduce
+habitat quality and biodiversity while changing exposure pathways for people.
+
+This page translates those relationships into an alert state, recovery
+context, and action protocol. It does not replace experts. It gives
+volunteers, researchers, and health teams a common, reviewable evidence base."
+
+
+03:15-03:40 | MAP: TURN RISK INTO PLACE
+----------------------------------------
+[Open Map. Show the legend and select the same site or its nearby cluster.]
+
+"Risk is geographic, so the Map turns the result into place. The markers use
+the same risk bands as the Dashboard and Impact Cards.
+
+A catchment manager can identify a cluster, select a site, inspect its causes,
+and choose the next response: confirm with sampling, remove pollution,
+restore habitat, or coordinate public-health follow-up."
+
+Judge signal: Impact, spatial prioritisation, real-world feasibility.
+
+
+03:40-04:15 | FIELD CAPTURE: NO DATA BLACK HOLE
+------------------------------------------------
+[Open Field Capture. Show the form, media attachment area, and connectivity
+indicator. If available, demonstrate the queued/offline state.]
+
+"The loop begins in the field. A volunteer records the site, measurements,
+rating, and optional photo or video evidence using a guided form.
+
+If connectivity drops, the submission is queued locally in IndexedDB, with a
+fallback for supported browsers. When the connection returns, it can retry;
+the PWA also prepares failed submissions for Background Sync. The visible
+connectivity state tells the user what happened.
+
+That is a small UX detail with a major impact: a difficult field visit does
+not disappear into a data black hole."
+
+
+04:15-04:45 | AUDIT TRAIL: MAKE TRUST INSPECTABLE
+-------------------------------------------------
+[Open Audit Trail. Expand one validation stage and one FHIR/storage stage.]
+
+"Finally, I open the Audit Trail. It exposes the pipeline from ingest and
+normalisation through validation, enrichment, correlation, FHIR mapping,
+insight rendering, storage, and distribution.
+
+I can move backwards from this risk card to the original evidence, quality
+flags, transformation steps, and interoperable representation. That makes
+the result reviewable and reproducible rather than merely impressive on
+screen."
+
+Judge signal: Technical implementation, governance, scientific credibility.
+
+
+04:45-05:00 | CLOSE: THE WINNING CLAIM
+--------------------------------------
+[Return to the strongest Impact Card. Hold the screen; do not navigate again.]
+
+"OneHealth Lens is a translation layer: from community observation, to
+explainable risk, to a coordinated One Health response.
+
+It is accessible enough for a volunteer, transparent enough for a scientist,
+and structured enough for a catchment manager. The next proof points are
+deliberately measurable: official OAH profile validation, calibration against
+real field and laboratory references, and PostgreSQL performance under
+concurrent load.
+
+We are not claiming those results before testing them. We built the system so
+they can be tested, audited, and improved."
+
+Final judge signal: Honest evidence, scalability mindset, confidence.
 
 
 PRESENTER CHECKLIST
 -------------------
-- Open on `/overview` or `/dashboard` with seeded data already loaded.
-- Confirm at least five monitored-site rows before recording.
-- Dismiss the Impact Cards guide before the demo if it appears.
-- Keep one known high-risk segment ready for Cards and One Health.
-- If map tiles are unavailable, show the legend and markers already loaded.
-- Do not claim official OAH conformance or scientific calibration without the
-  corresponding external evidence.
-- End on a populated Impact Card or Overview, never on a loading state.
-
+- Preload `/overview` or `/dashboard`; verify the API is healthy.
+- Confirm at least five populated monitored-site rows.
+- Choose one high-risk site and use it on Dashboard, Cards, One Health, and
+  Map. Do not change sites during the story.
+- Dismiss the Impact Cards onboarding guide before recording if it appears.
+- On Cards, demonstrate Simple -> Detailed so the working view control is
+  visible and purposeful.
+- Keep one photo/video sample ready, but do not rely on camera permissions.
+- If map tiles are unavailable, show the loaded markers and legend.
+- If offline mode cannot be demonstrated live, explain the queue honestly and
+  show the connectivity indicator.
+- Do not claim official OAH conformance, scientific calibration, or production
+  PostgreSQL benchmark results without external evidence.
+- Keep the final Impact Card visible for the last line.

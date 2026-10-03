@@ -5,12 +5,16 @@ from app.schemas.enriched_observation import EnrichedObservation
 from app.schemas.insight import OneHealthInsight, RiskColumn, CausalLink
 
 
-# ---------------------------------------------------------------
-# Weights — configurable engineering choice.
-# Informed by Neer's published weighting (E 45%, H 30%, P 25%),
-# adapted to our four-domain model.
-# Sum MUST equal 1.0
-# ---------------------------------------------------------------
+# Stage 5: One Health Correlation Engine
+# Calculates the multi-domain One Health Risk Index (0.00–1.00).
+#
+# The 30/30/20/20 weighting aligns with the Horizon Europe OneAquaHealth
+# Health Assessment Framework (Deliverable D6.1): water quality (30%),
+# biological health (30%), human exposure (20%), and environmental pressure
+# (20%). The implementation applies these domains to the indicators available
+# in the citizen observation schema.
+# Reference: Horizon Europe OneAquaHealth Deliverable D6.1, Health Assessment
+# Framework for Urban Aquatic Ecosystems.
 WEIGHTS = {
     "water_quality": 0.30,
     "biological_health": 0.30,
