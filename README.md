@@ -1,6 +1,3 @@
-<!-- Generated for Shadhai/onehealth. Source of truth: your existing README (repo page was not fetchable: robots.txt).
-     Lines marked UPDATE/VERIFY/ADD are inferred and need a quick check. -->
-
 <div align="center">
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f4c81,50:1a7abf,100:00d4ff&height=220&section=header&text=%F0%9F%92%A7%20OneHealth%20Lens&fontSize=52&fontColor=ffffff&fontAlignY=38&desc=Citizen%20water%20data%20%E2%86%92%20explainable%20One%20Health%20intelligence&descAlignY=60&descSize=18&animation=fadeIn" width="100%" />
@@ -92,11 +89,17 @@ then publishes them as <b>FHIR R4 bundles</b> and action-ready <b>impact cards</
 <img src="docs/screenshots/trends.png" alt="Trends and 7-day forecast" width="90%" />
 </div>
 
-### 🏥 FHIR Output & Validation
+### 🏥 FHIR Output & Local Validation
 
-| FHIR R4 bundle (JSON) | FHIR validator: 0 errors |
+| FHIR R4 bundle (JSON) | Local validator output |
 |:---:|:---:|
-| <img src="docs/screenshots/fhir-bundle-json.png" alt="FHIR bundle JSON" /> | <img src="docs/screenshots/fhir-validator-0-errors.png" alt="FHIR validator 0 errors" /> |
+| <img src="docs/screenshots/fhir-bundle-json.png" alt="FHIR bundle JSON" /> | <img src="docs/screenshots/fhir-validator-0-errors.png" alt="Local validator output" /> |
+
+> The local validator run reported no fatal/error findings for the generated
+> bundle, but unresolved external OAH profiles and terminology produced
+> warnings. This screenshot is not proof of official `validator.fhir.org`
+> OAH package conformance; install the official package and run
+> `python scripts/validate_fhir.py` for authoritative validation.
 
 <details>
 <summary>More hero shots</summary>
@@ -491,11 +494,50 @@ Schema creation, data-copy guidance, staged cutover and rollback: [`docs/postgre
 
 ## 🧪 Testing & CI
 
+### Verified results
+
+The current local verification baseline is **104 automated tests**:
+
+| Area | Command | Result |
+|:---|:---|:---:|
+| Backend API and pipeline | `python -m pytest -q` | ✅ **76 passed** |
+| Frontend behavior and components | `npm test -- --run` | ✅ **28 passed** |
+| Combined automated tests | Backend + frontend suites | ✅ **104 passed** |
+| Production frontend build | `npm run build` | ✅ Successful |
+| Database adapter contract | `python -m pytest tests/test_db_sqlalchemy.py -q` | ✅ Passing |
+| Browser E2E | `npm run test:e2e` | CI-configured: shell, dashboard, cards, navigation checks |
+
+The reproducible local pipeline benchmark processes **500 synthetic
+observations through all nine stages**:
+
+| Measurement | Result |
+|:---|---:|
+| Input / output | 500 / 500 |
+| Elapsed time | 25.587 seconds |
+| Throughput | **19.5 observations/second** |
+| Average latency | **51.174 ms/observation** |
+| Peak traced memory | **7.81 MB** |
+| Errors | **0** |
+| Persisted raw, normalized, validated, enriched records | 500 each |
+| Persisted insights and FHIR bundles | 500 each |
+| Risk distribution | 79 High · 109 Moderate · 312 Low |
+
+This benchmark uses Python 3.11, in-memory SQLite, and Open-Meteo disabled.
+It measures local pipeline processing and is not a production PostgreSQL
+capacity claim. Reproduce it with:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\generate_synthetic.py
+.\.venv\Scripts\python.exe scripts\load_test.py
+```
+
+Full machine-readable output: [`docs/load-test-report.json`](docs/load-test-report.json)
+
 | Suite | Command | Current result |
 |:---|:---|:---:|
 | Backend (pytest) | `python -m pytest -q` | ✅ **76 passed** |
 | Frontend (Vitest) | `npm test -- --run` | ✅ **28 passed** |
-| Browser E2E (Playwright) | `npx playwright install chromium && npm run test:e2e` | ✅ shell, dashboard, cards, navigation |
+| Browser E2E (Playwright) | `npx playwright install chromium && npm run test:e2e` | CI-configured: shell, dashboard, cards, navigation |
 | Adapter | `python -m pytest tests/test_db_sqlalchemy.py -q` | ✅ |
 | Load test | `python scripts/load_test.py` | ✅ 0 errors |
 
